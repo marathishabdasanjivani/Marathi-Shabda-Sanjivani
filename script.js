@@ -1,48 +1,58 @@
-// Your initial database of words
-const vocabularyData = [
-    { word: "इत्यंभूत", meaning: "Detailed / In-depth", example: "त्याने मला घटनेची इत्यंभूत माहिती दिली." },
-    { word: "ईषत", meaning: "Slightly / A little", example: "आज हवेत ईषत गारवा आहे." },
-    { word: "सविस्तर", meaning: "In detail / Elaborately", example: "हा मुद्दा सविस्तर समजून घ्या." },
-    { word: "विस्तृत", meaning: "Vast / Extensive", example: "हा एक विस्तृत अभ्यासक्रम आहे." }
-];
-
-// SAFETY SHIELD: Forces the app to wait until the screen elements exist
 document.addEventListener('DOMContentLoaded', () => {
-    
     const searchBar = document.getElementById('searchBar');
     const wordsContainer = document.getElementById('wordsContainer');
+    const homepageFeatures = document.getElementById('homepageFeatures');
 
-    // Function to render cards on screen
-    function renderWords(words) {
+    let vocabularyData = [];
+
+    // Fetch the separate database file seamlessly
+    fetch('dictionary.json')
+        .then(response => response.json())
+        .then(data => {
+            vocabularyData = data;
+        })
+        .catch(err => console.error("Error loading dictionary database:", err));
+
+    function renderSearchResults(results) {
         wordsContainer.innerHTML = '';
         
-        if(words.length === 0) {
-            wordsContainer.innerHTML = '<p style="text-align:center; color:#888;">No matching words found.</p>';
+        if (results.length === 0) {
+            wordsContainer.innerHTML = '<div class="premium-card"><p style="text-align:center; color:#888; margin:0;">क्षमस्व, कोणताही शब्द सापडला नाही. (No matching words found.)</p></div>';
             return;
         }
 
-        words.forEach(item => {
+        results.forEach(item => {
             wordsContainer.innerHTML += `
-                <div class="word-card">
+                <div class="premium-card">
                     <h2>${item.word}</h2>
-                    <p class="meaning"><strong>Meaning:</strong> ${item.meaning}</p>
-                    <p class="example"><strong>Example:</strong> ${item.example}</p>
+                    <span class="tag">${item.partOfSpeech} | ${item.shortMeaning}</span>
+                    <p class="long-def">${item.longDefinition}</p>
+                    <div class="ex-box"><strong>उदा.</strong> ${item.example}</div>
                 </div>
             `;
         });
     }
 
-    // Watch what user types
     searchBar.addEventListener('input', (e) => {
-        const text = e.target.value.toLowerCase();
+        const text = e.target.value.trim().toLowerCase();
+
+        // If the user clears the search bar, show homepage features again and hide results
+        if (text.length === 0) {
+            wordsContainer.innerHTML = '';
+            homepageFeatures.style.display = 'grid';
+            return;
+        }
+
+        // Hide regular homepage elements when search is active
+        homepageFeatures.style.display = 'none';
+
+        // Filter through the dynamic array
         const filtered = vocabularyData.filter(item => {
             return item.word.toLowerCase().includes(text) || 
-                   item.meaning.toLowerCase().includes(text);
+                   item.shortMeaning.toLowerCase().includes(text) ||
+                   item.longDefinition.toLowerCase().includes(text);
         });
-        renderWords(filtered);
+
+        renderSearchResults(filtered);
     });
-
-    // Show all words initially
-    renderWords(vocabularyData);
-
 });

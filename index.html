@@ -3,23 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>मराठी शब्द संजीवनी</title>
+    <title>मराठी शब्द संजीवनी | Marathi Shabda Sanjivani</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>मराठी शब्द संजीवनी</h1>
-        <p>Discover the beauty of Marathi vocabulary</p>
-        <div class="search-container">
-            <input type="text" id="searchBar" placeholder="Search for a word (e.g., इत्यंभूत)...">
+
+    <header class="premium-hero">
+        <div class="hero-content">
+            <h1 class="brand-title">मराठी शब्द संजीवनी</h1>
+            <p class="brand-subtitle">रुजवूया मराठी शब्दांचे वैभव</p>
+            <div class="search-wrapper">
+                <input type="text" id="searchBar" placeholder="शब्दाचा अर्थ शोधा... (उदा. इत्यंभूत)">
+            </div>
         </div>
     </header>
 
-    <main>
-        <div id="wordsContainer" class="words-grid">
+    <main class="content-container">
+        <section id="wordsContainer" class="results-container"></section>
+
+        <section id="homepageFeatures" class="features-grid">
+            <div class="feature-card featured-word">
+                <div class="card-badge">आजचा शब्द (Word of the Day)</div>
+                <h2>ईषत</h2>
+                <p class="meaning-tag">क्रियाविशेषण | Slightly</p>
+                <p class="brief">अतिशय कमी प्रमाणात, थोडेसे किंवा किंचित स्वरूपातील गोष्ट.</p>
+                <p class="card-example"><strong>उदा.</strong> आज हवेत ईषत गारवा जाणवत आहे.</p>
             </div>
+
+            <div class="feature-card explore-box">
+                <h2>शब्दसंग्रह चाळणी</h2>
+                <p>मराठी भाषेतील समृद्ध आणि दुर्मिळ शब्दांचा साठा अनुभवण्यासाठी शोधपट्टीचा वापर करा.</p>
+            </div>
+        </section>
     </main>
 
-<script src="script.js" defer></script>
+    <script src="script.js" defer></script>
 </body>
 </html>

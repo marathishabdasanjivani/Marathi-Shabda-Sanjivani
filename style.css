@@ -1,0 +1,51 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f7f6;
+    color: #333;
+}
+header {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: white;
+    text-align: center;
+    padding: 2rem 1rem;
+}
+.search-container {
+    margin-top: 1rem;
+}
+#searchBar {
+    width: 80%;
+    max-width: 500px;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 25px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    outline: none;
+}
+.words-grid {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+.word-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.word-card h2 {
+    margin-top: 0;
+    color: #1e3c72;
+}
+.meaning {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+.example {
+    color: #666;
+    font-style: italic;
+    margin-top: 0.5rem;
+}

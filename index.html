@@ -8,38 +8,56 @@
 </head>
 <body>
 
+    <!-- Header Navigation -->
     <header class="oxford-header">
         <div class="header-top">
             <div class="brand-group">
                 <h1 class="site-title">मराठी शब्द संजीवनी</h1>
                 <p class="site-tagline">रुजवूया मराठी शब्दांचे वैभव</p>
             </div>
+            <!-- The Interactive Menu Button -->
             <button class="menu-toggle" id="menuBtn" aria-label="Toggle Menu">
-                <span></span>
-                <span></span>
-                <span></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
             </button>
         </div>
         
-        <div class="search-full-width">
-            <input type="text" id="searchBar" placeholder="शब्दाचा अर्थ शोधा... (उदा. इत्यंभूत)">
+        <!-- Search Bar with Distinct Border and Integrated Search Icon -->
+        <div class="search-container-box">
+            <div class="search-wrapper">
+                <input type="text" id="searchBar" placeholder="शब्दाचा अर्थ शोधा... (उदा. इत्यंभूत)">
+                <div class="search-icon-holder">
+                    <!-- SVG Magnifying Glass Icon -->
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </div>
+            </div>
         </div>
     </header>
 
+    <!-- Invisible Background Overlay for closing the menu drawer -->
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <!-- Side Navigation Menu Drawer -->
     <nav class="side-nav" id="sideNav">
         <ul>
             <li><a href="#">मुख्य पृष्ठ (Home)</a></li>
             <li><a href="#">मूलभूत मराठी शिका (Learn Marathi)</a></li>
-            <li><a href="#">शब्दसंग्रह सराव (Quiz)</a></li>
+            <li><a href="#">शब्दसंग्र संग्रह (Quiz)</a></li>
             <li><a href="#">आमच्याबद्दल (About)</a></li>
         </ul>
     </nav>
 
     <main class="main-layout">
+        <!-- Top Ad Placement Space -->
         <div class="ad-placeholder banner-ad">
             <span>जाहिरात (Advertisement)</span>
         </div>
 
+        <!-- Word Entry Container -->
         <div id="entryContainer">
             <div class="homepage-default" id="homepageDefault">
                 <div class="section-title">आजचा मुख्य शब्द</div>
@@ -58,11 +76,32 @@
             </div>
         </div>
 
+        <!-- Footer Layout with Brand Vector Icons -->
         <footer class="oxford-footer">
             <div class="social-links">
-                <a href="#" class="social-icon">Instagram</a>
-                <a href="#" class="social-icon">YouTube</a>
-                <a href="#" class="social-icon">Facebook</a>
+                <!-- Instagram -->
+                <a href="https://www.instagram.com/marathi.shabda.sanjivani" target="_blank" class="social-icon-btn" aria-label="Instagram">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                    </svg>
+                </a>
+                
+                <!-- YouTube -->
+                <a href="https://youtube.com/@marathi.shabda.sanjivani" target="_blank" class="social-icon-btn" aria-label="YouTube">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path>
+                        <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
+                    </svg>
+                </a>
+
+                <!-- Facebook -->
+                <a href="https://www.facebook.com/share/1EW56uHkJa/" target="_blank" class="social-icon-btn" aria-label="Facebook">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                    </svg>
+                </a>
             </div>
             <p class="footer-credit">© 2026 मराठी शब्द संजीवनी. All Rights Reserved.</p>
         </footer>

@@ -4,15 +4,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const homepageDefault = document.getElementById('homepageDefault');
     const menuBtn = document.getElementById('menuBtn');
     const sideNav = document.getElementById('sideNav');
+    const menuOverlay = document.getElementById('menuOverlay');
 
     let dictionaryData = [];
 
-    // Toggle Side Navigation Drawers
-    menuBtn.addEventListener('click', () => {
+    // Toggles side navigation open/close and transforms hamburger icon
+    function toggleMenu() {
+        menuBtn.classList.toggle('active');
         sideNav.classList.toggle('open');
-    });
+        menuOverlay.classList.toggle('open');
+    }
 
-    // Fetch vocabulary text databases
+    // Open/Close on hamburger button click
+    menuBtn.addEventListener('click', toggleMenu);
+
+    // Close menu instantly when clicking the background overlay (LHS background)
+    menuOverlay.addEventListener('click', toggleMenu);
+
+    // Pull local text database JSON asynchronously 
     fetch('dictionary.json')
         .then(res => res.json())
         .then(data => { dictionaryData = data; })
@@ -36,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     <ol class="definitions-list">
             `;
 
-            // Loop through meanings and create list items with integrated interstitial ad blocks
             item.meanings.forEach((m, index) => {
                 entryHTML += `
                     <li>
@@ -45,7 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     </li>
                 `;
                 
-                // Oxford Ad Injection Rule: Inject an ad placeholder after the first definition item if more follow
                 if(index === 0 && item.meanings.length > 1) {
                     entryHTML += `</ol><div class="ad-placeholder">इन-लाइन जाहिरात (Content Ad Slot)</div><ol class="definitions-list" start="2">`;
                 }

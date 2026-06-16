@@ -21,7 +21,7 @@ body {
     line-height: 1.5;
 }
 
-/* Header & Full-Width Search Layout */
+/* Header Base Layout */
 .oxford-header {
     background-color: var(--primary-dark);
     color: white;
@@ -47,7 +47,7 @@ body {
     margin: 2px 0 0 0;
 }
 
-/* Hamburger Menu Icon */
+/* Toggle Menu Bars Structure & Animation States */
 .menu-toggle {
     background: none;
     border: none;
@@ -58,17 +58,50 @@ body {
     height: 18px;
     width: 24px;
     padding: 0;
+    z-index: 110;
 }
 
-.menu-toggle span {
+.menu-toggle .bar {
     display: block;
     height: 3px;
     width: 100%;
     background-color: white;
     border-radius: 2px;
+    transition: all 0.3s ease;
 }
 
-/* Mobile Side Navigation Drawer */
+/* Transforms 3 lines into an "X" when open */
+.menu-toggle.active .bar:nth-child(1) {
+    transform: translateY(7.5px) rotate(45deg);
+}
+.menu-toggle.active .bar:nth-child(2) {
+    opacity: 0;
+}
+.menu-toggle.active .bar:nth-child(3) {
+    transform: translateY(-7.5px) rotate(-45deg);
+}
+
+/* Screen Dimming Background Overlay */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px);
+    z-index: 95;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.menu-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Side Navigation Window Frame */
 .side-nav {
     position: fixed;
     top: 0;
@@ -76,10 +109,10 @@ body {
     width: 280px;
     height: 100%;
     background-color: var(--primary-dark);
-    box-shadow: -5px 0 15px rgba(0,0,0,0.15);
+    box-shadow: -5px 0 15px rgba(0,0,0,0.25);
     z-index: 100;
     transition: right 0.3s ease;
-    padding-top: 4rem;
+    padding-top: 5rem;
 }
 
 .side-nav.open {
@@ -95,34 +128,59 @@ body {
 .side-nav ul li a {
     display: block;
     color: white;
-    padding: 1rem 2rem;
+    padding: 1.2rem 2rem;
     text-decoration: none;
+    font-size: 1.05rem;
     border-bottom: 1px solid #1e293b;
 }
 
-/* Full-width search bar input box styling */
-.search-full-width {
-    width: 100%;
+/* Brand New Eye-Catching Bordered Search Container Layout */
+.search-container-box {
+    padding: 0 1.2rem 1.2rem 1.2rem;
 }
 
-.search-full-width #searchBar {
+.search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background-color: white;
+    border: 2.5px solid var(--accent-gold); /* Noticeable solid gold border all sides */
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.search-wrapper #searchBar {
     width: 100%;
     border: none;
-    padding: 1rem 1.2rem;
+    padding: 0.9rem 3.5rem 0.9rem 1rem; /* Space on right avoids text overlap with icon */
     font-size: 1.1rem;
     outline: none;
-    background-color: #ffffff;
-    border-bottom: 3px solid var(--accent-gold);
+    color: var(--text-primary);
 }
 
-/* Main Layout Boundaries */
+.search-icon-holder {
+    position: absolute;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-dark);
+    pointer-events: none;
+}
+
+.search-icon-holder svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Content Elements & Layout Configurations */
 .main-layout {
     max-width: 100%;
     margin: 0 auto;
     padding: 1rem;
 }
 
-/* Oxford Entry Typography Rules */
 .word-entry {
     background: white;
     padding: 1.5rem 1.2rem;
@@ -153,7 +211,6 @@ body {
     font-weight: 600;
 }
 
-/* Numbered Definitions Layout */
 .definitions-list {
     margin: 0;
     padding-left: 1.2rem;
@@ -179,7 +236,6 @@ body {
     font-size: 1rem;
 }
 
-/* Dedicated Advertisement Layout Blocks */
 .ad-placeholder {
     background-color: var(--ad-bg);
     border: 1px dashed #cbd5e1;
@@ -199,7 +255,7 @@ body {
     height: 90px;
 }
 
-/* Oxford Footer styling */
+/* Modern Vector Social Buttons Formatting */
 .oxford-footer {
     text-align: center;
     padding: 3rem 1rem 2rem 1rem;
@@ -214,11 +270,30 @@ body {
     margin-bottom: 1.5rem;
 }
 
-.social-icon {
+.social-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
     color: var(--primary-dark);
+    background-color: white;
+    border: 1.5px solid var(--border-light);
+    border-radius: 50%;
+    transition: all 0.2s ease;
     text-decoration: none;
-    font-weight: 600;
-    font-size: 0.9rem;
+}
+
+.social-icon-btn:hover, .social-icon-btn:active {
+    color: white;
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    transform: scale(1.05);
+}
+
+.social-icon-btn svg {
+    width: 20px;
+    height: 20px;
 }
 
 .footer-credit {

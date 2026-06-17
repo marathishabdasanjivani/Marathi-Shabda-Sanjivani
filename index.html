@@ -8,20 +8,20 @@
 </head>
 <body>
 
-    <header class="oxford-header">
-        <div class="header-top">
-            <div class="brand-group">
-                <h1 class="site-title">मराठी शब्द संजीवनी</h1>
-                <p class="site-tagline">रुजवूया मराठी शब्दांचे वैभव</p>
+    <header class="premium-hero">
+        <div class="hero-content">
+            <div class="header-top-row">
+                <div class="brand-text-left">
+                    <h1 class="brand-title">मराठी शब्द संजीवनी</h1>
+                    <p class="brand-subtitle">रुजवूया मराठी शब्दांचे वैभव</p>
+                </div>
+                <button class="menu-toggle" id="menuBtn" aria-label="Toggle Menu">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </button>
             </div>
-            <button class="menu-toggle" id="menuBtn" aria-label="Toggle Menu">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
-            </button>
-        </div>
-        
-        <div class="search-container-box">
+
             <div class="search-wrapper">
                 <input type="text" id="searchBar" placeholder="शब्दाचा अर्थ शोधा... (उदा. इत्यंभूत)">
                 <div class="search-icon-holder">
@@ -45,73 +45,72 @@
         </ul>
     </nav>
 
-    <main class="main-layout">
-        <div class="ad-placeholder banner-ad">
-            <span>जाहिरात (Advertisement)</span>
-        </div>
+    <main class="content-container">
+        <section id="wordsContainer" class="results-container"></section>
 
-        <div id="entryContainer">
-            <div class="homepage-default" id="homepageDefault">
+        <div id="homepageFeatures" class="features-grid">
+            
+            <div id="wordOfTheDaySection" class="feature-card featured-word">
+                <div class="card-badge">आजचा शब्द (Word of the Day)</div>
+                <h2>ईषत</h2>
+                <p class="meaning-tag">क्रियाविशेषण | Slightly</p>
+                <p class="brief">अतिशय कमी प्रमाणात, थोडेसे किंवा किंचित स्वरूपातील गोष्ट.</p>
+                <p class="card-example"><strong>उदा.</strong> आज हवेत ईषत गारवा जाणवत आहे.</p>
+                <a href="#" class="section-redirect-link">→ मागील 'आजचे शब्द' सूची पहा (Word of the Day Archive)</a>
+            </div>
+
+            <div id="quizSection" class="feature-card quiz-card-box">
+                <div class="card-badge">शब्दसंग्रह चाचणी (Quiz)</div>
+                <div class="quiz-header">
+                    <span id="quizProgress">प्रश्न १/५</span>
+                    <span id="quizScore">गुण: ०</span>
+                </div>
+                <div id="quizQuestionBox" class="quiz-question">प्रश्न लोड होत आहे...</div>
+                <div id="quizOptionsContainer" class="quiz-options-stack"></div>
+                <div id="quizActionWrapper" class="quiz-action-footer"></div>
+            </div>
+
+            <div id="alphabetSection" class="feature-card alphabet-card">
+                <div class="card-badge">अक्षरक्रमानुसार शब्द शोधा</div>
+                <p class="alphabet-intro">खालील कोणत्याही अक्षरावर क्लिक करून त्या अक्षरापासून सुरू होणारे शब्द पहा:</p>
                 
-                <section id="wordOfTheDaySection" class="homepage-section">
-                    <div class="section-title">आजचा मुख्य शब्द</div>
-                    <div class="word-entry">
-                        <div class="entry-header">
-                            <h2 class="headword">ईषत</h2>
-                            <span class="pos">क्रियाविशेषण</span>
-                        </div>
-                        <ol class="definitions-list">
-                            <li>
-                                <span class="definition-text">किंचित, थोडेसे, अतिशय कमी प्रमाणात असलेले.</span>
-                                <div class="example-item">आज हवेत ईषत गारवा जाणवत आहे.</div>
-                            </li>
-                        </ol>
-                    </div>
-                    <a href="#" class="section-redirect-link">→ मागील 'आजचे शब्द' सूची पहा (Word of the Day Archive)</a>
-                </section>
-
-                <section id="quizSection" class="homepage-section">
-                    <div class="section-title">शब्दसंग्रह चाचणी (Quiz)</div>
-                    <div class="quiz-card">
-                        <div class="quiz-header">
-                            <span id="quizProgress">प्रश्न १/५</span>
-                            <span id="quizScore">गुण: ०</span>
-                        </div>
-                        <div id="quizQuestionBox" class="quiz-question">प्रश्न लोड होत आहे...</div>
-                        <div id="quizOptionsContainer" class="quiz-options-stack"></div>
-                        <div id="quizActionWrapper" class="quiz-action-footer"></div>
-                    </div>
-                </section>
-
-                <section id="alphabetSection" class="homepage-section">
-                    <div class="section-title">अक्षरक्रमानुसार शब्द शोधा</div>
-                    <p class="section-intro-text">खालील कोणत्याही अक्षरावर क्लिक करून त्या अक्षरापासून सुरू होणारे शब्द पहा:</p>
-                    
-                    <div class="alphabet-container">
-                        <div class="alphabet-row"><span>क</span><span>ख</span><span>ग</span><span>घ</span><span>ङ</span></div>
-                        <div class="alphabet-row"><span>च</span><span>छ</span><span>ज</span><span>झ</span><span>ञ</span></div>
-                        <div class="alphabet-row"><span>ट</span><span>ठ</span><span>ड</span><span>ढ</span><span>ण</span></div>
-                        <div class="alphabet-row"><span>त</span><span>थ</span><span>द</span><span>ध</span><span>न</span></div>
-                        <div class="alphabet-row"><span>प</span><span>फ</span><span>ब</span><span>भ</span><span>म</span></div>
-                        <div class="alphabet-row"><span>य</span><span>र</span><span>ल</span><span>व</span><span>श</span></div>
-                        <div class="alphabet-row"><span>ष</span><span>स</span><span>ह</span><span>ळ</span><span>क्ष</span></div>
-                        <div class="alphabet-row" style="justify-content: center; gap: 15px;"><span>ज्ञ</span></div>
-                    </div>
-                </section>
-
+                <div class="alphabet-container">
+                    <div class="alphabet-row"><span>अ</span><span>आ</span><span>इ</span><span>ई</span><span>उ</span></div>
+                    <div class="alphabet-row"><span>ऊ</span><span>ए</span><span>ऐ</span><span>ओ</span><span>औ</span></div>
+                    <div class="alphabet-row" style="justify-content: flex-start; gap: 8px;"><span>अं</span><span>अः</span></div>
+                    <div class="alphabet-row"><span>क</span><span>ख</span><span>ग</span><span>घ</span><span>ङ</span></div>
+                    <div class="alphabet-row"><span>च</span><span>छ</span><span>ज</span><span>झ</span><span>ञ</span></div>
+                    <div class="alphabet-row"><span>ट</span><span>ठ</span><span>ड</span><span>ढ</span><span>ण</span></div>
+                    <div class="alphabet-row"><span>त</span><span>थ</span><span>द</span><span>ध</span><span>न</span></div>
+                    <div class="alphabet-row"><span>प</span><span>फ</span><span>ब</span><span>भ</span><span>म</span></div>
+                    <div class="alphabet-row"><span>य</span><span>र</span><span>ल</span><span>व</span><span>श</span></div>
+                    <div class="alphabet-row"><span>ष</span><span>स</span><span>ह</span><span>ळ</span><span>क्ष</span></div>
+                    <div class="alphabet-row" style="justify-content: flex-start;"><span>ज्ञ</span></div>
+                </div>
             </div>
         </div>
 
         <footer class="oxford-footer">
             <div class="social-links">
                 <a href="https://www.instagram.com/marathi.shabda.sanjivani" target="_blank" class="social-icon-btn" aria-label="Instagram">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                    </svg>
                 </a>
+                
                 <a href="https://youtube.com/@marathi.shabda.sanjivani" target="_blank" class="social-icon-btn" aria-label="YouTube">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path>
+                        <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
+                    </svg>
                 </a>
+
                 <a href="https://www.facebook.com/share/1EW56uHkJa/" target="_blank" class="social-icon-btn" aria-label="Facebook">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                    </svg>
                 </a>
             </div>
             <p class="footer-credit">© 2026 मराठी शब्द संजीवनी. All Rights Reserved.</p>

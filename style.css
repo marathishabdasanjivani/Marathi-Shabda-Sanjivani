@@ -478,3 +478,45 @@ body {
     border-color: var(--accent-gold);
     padding-left: 22px; /* Subtle modern slide movement on click */
 }
+/* ==========================================================================
+   ADDED SYSTEM RULES: Search Dropdown Styling
+   ========================================================================== */
+
+/* Dropdown list container matching search-wrapper dimensions */
+.search-dropdown-list {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 100%;
+    background: white;
+    border: 2px solid var(--accent-gold);
+    border-top: none;
+    z-index: 999;
+    max-height: 250px;
+    overflow-y: auto;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Individual suggestion items in the list */
+.dropdown-row-item {
+    padding: 0.9rem 1.2rem;
+    cursor: pointer;
+    font-weight: 700;
+    border-bottom: 1px solid var(--border-light);
+    color: var(--primary-dark);
+    text-align: left; /* Kept standard left-aligned */
+    font-size: 1.05rem;
+    transition: background 0.2s ease;
+}
+
+/* Hover and active states for the dropdown items */
+.dropdown-row-item:hover, .dropdown-row-item:active {
+    background-color: #f1f5f9;
+    color: var(--text-primary);
+}
+
+/* Removes line border on the last search element */
+.dropdown-row-item:last-child {
+    border-bottom: none;
+}

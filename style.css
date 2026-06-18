@@ -201,7 +201,7 @@ body {
 .headword {
     font-size: 2.2rem;
     margin: 0;
-    color: var(--primary-dark);
+    color: var(--test-2);
     font-weight: 700;
 }
 

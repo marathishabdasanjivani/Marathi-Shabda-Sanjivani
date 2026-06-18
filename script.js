@@ -25,8 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
         menuOverlay.classList.toggle('open');
     }
 
-    menuBtn.addEventListener('click', toggleMenu);
-    menuOverlay.addEventListener('click', toggleMenu);
+    if (menuBtn) menuBtn.addEventListener('click', toggleMenu);
+    if (menuOverlay) menuOverlay.addEventListener('click', toggleMenu);
 
     // Load Database Array
     fetch('dictionary.json')
@@ -50,8 +50,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (onRenderCallback) onRenderCallback();
-        searchDropdown.style.display = 'none';
-        searchBar.value = '';
+        if (searchDropdown) searchDropdown.style.display = 'none';
+        if (searchBar) searchBar.value = '';
     }
 
     function loadHomepage() {
@@ -61,34 +61,40 @@ document.addEventListener('DOMContentLoaded', () => {
         setupQuizEngine(homeNode);
     }
 
-    siteBrandGroup.addEventListener('click', loadHomepage);
-    navHome.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); loadHomepage(); });
+    if (siteBrandGroup) siteBrandGroup.addEventListener('click', loadHomepage);
+    if (navHome) navHome.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); loadHomepage(); });
 
     // Handle specific standalone component paths
-    navWotd.addEventListener('click', (e) => {
-        e.preventDefault();
-        toggleMenu();
-        const node = cachedHomepage.cloneNode(true);
-        const section = node.querySelector('#wordOfTheDaySection');
-        showPage(section);
-        initializeRoutingEvents(entryContainer);
-    });
+    if (navWotd) {
+        navWotd.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleMenu();
+            const node = cachedHomepage.cloneNode(true);
+            const section = node.querySelector('#wordOfTheDaySection');
+            showPage(section);
+            initializeRoutingEvents(entryContainer);
+        });
+    }
 
-    navQuiz.addEventListener('click', (e) => {
-        e.preventDefault();
-        toggleMenu();
-        const node = cachedHomepage.cloneNode(true);
-        const section = node.querySelector('#quizSection');
-        showPage(section, () => { setupQuizEngine(entryContainer); });
-    });
+    if (navQuiz) {
+        navQuiz.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleMenu();
+            const node = cachedHomepage.cloneNode(true);
+            const section = node.querySelector('#quizSection');
+            showPage(section, () => { setupQuizEngine(entryContainer); });
+        });
+    }
 
-    navAlphabet.addEventListener('click', (e) => {
-        e.preventDefault();
-        toggleMenu();
-        const node = cachedHomepage.cloneNode(true);
-        const section = node.querySelector('#alphabetSection');
-        showPage(section, () => { initializeRoutingEvents(entryContainer); });
-    });
+    if (navAlphabet) {
+        navAlphabet.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleMenu();
+            const node = cachedHomepage.cloneNode(true);
+            const section = node.querySelector('#alphabetSection');
+            showPage(section, () => { initializeRoutingEvents(entryContainer); });
+        });
+    }
 
     // Wire up events for embedded elements dynamically
     function initializeRoutingEvents(context) {
@@ -123,16 +129,15 @@ document.addEventListener('DOMContentLoaded', () => {
         
         let letterPageHTML = `
             <div class="word-entry">
-                <div class="section-title-badge">अक्षर सूची: "${letter}"</div>
-                <h2 class="headword" style="font-size: 1.8rem; margin-bottom: 1rem; border-bottom: 2px solid var(--primary-gold); padding-bottom: 0.4rem;">'${letter}' पासून सुरू होणारे शब्द</h2>
+                <h2 class="headword entry-letter-title">अक्षर सूची: "${letter}"</h2>
         `;
 
         if (matchedWords.length === 0) {
-            letterPageHTML += `<p style="color: #64748b; margin-top: 1rem;">या अक्षराचे शब्द अजून उपलब्ध नाहीत.</p>`;
+            letterPageHTML += `<p style="color: #64748b; margin-top: 1.5rem;">या अक्षराचे शब्द अजून उपलब्ध नाहीत.</p>`;
         } else {
-            letterPageHTML += `<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.8rem; margin-top: 1.5rem;">`;
+            letterPageHTML += `<div class="letter-words-list-stack">`;
             matchedWords.forEach(w => {
-                letterPageHTML += `<button class="word-target-btn" data-word="${w.word}" style="background: #fff; border: 1px solid var(--border-light); padding: 0.8rem; border-radius: 6px; font-weight: bold; cursor: pointer; color: var(--primary-dark); text-align: center; transition: all 0.2s;">${w.word}</button>`;
+                letterPageHTML += `<button class="word-target-btn letter-word-row-item" data-word="${w.word}">${w.word}</button>`;
             });
             letterPageHTML += `</div>`;
         }
@@ -157,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Page 2: Standalone Full Word Detail Page ---
     function loadWordDetailPage(wordName) {
-        const item = dictionaryData.find(w => w.word.toLowerCase() === wordName.toLowerCase());
+        const item = dictionaryData.find(w => w.word.trim().toLowerCase() === wordName.trim().toLowerCase());
         if(!item) return;
 
         let wordHTML = `
@@ -234,42 +239,45 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Search Dropdown Engine Hook ---
-    searchBar.addEventListener('input', (e) => {
-        const inputVal = e.target.value.trim().toLowerCase();
+    if (searchBar && searchDropdown) {
+        searchBar.addEventListener('input', (e) => {
+            const inputVal = e.target.value.trim().toLowerCase();
 
-        if (inputVal.length === 0) {
-            searchDropdown.innerHTML = '';
-            searchDropdown.style.display = 'none';
-            return;
-        }
+            if (inputVal.length === 0) {
+                searchDropdown.innerHTML = '';
+                searchDropdown.style.display = 'none';
+                return;
+            }
 
-        const matches = dictionaryData.filter(item => item.word.toLowerCase().includes(inputVal));
+            const matches = dictionaryData.filter(item => item.word.toLowerCase().includes(inputVal));
 
-        if (matches.length === 0) {
-            searchDropdown.innerHTML = `<div style="padding: 0.8rem; color: #64748b; font-size: 0.95rem; text-align: center;">शब्द सापडले नाहीत.</div>`;
-        } else {
-            searchDropdown.innerHTML = matches.map(item => `
-                <div class="dropdown-row-item" data-word="${item.word}" style="padding: 0.8rem 1.2rem; cursor: pointer; font-weight: bold; border-bottom: 1px solid #f1f5f9; color: var(--primary-dark); transition: background 0.2s;">
-                    ${item.word} <span style="font-size:0.8rem; font-weight:normal; color:#64748b; margin-left:0.5rem;">(${item.partOfSpeech})</span>
-                </div>
-            `).join('');
-        }
+            if (matches.length === 0) {
+                searchDropdown.innerHTML = `<div style="padding: 0.8rem; color: #64748b; font-size: 0.95rem; text-align: center;">शब्द सापडले नाहीत.</div>`;
+            } else {
+                searchDropdown.innerHTML = matches.map(item => `
+                    <div class="dropdown-row-item" data-word="${item.word}">
+                        ${item.word} <span style="font-size:0.8rem; font-weight:normal; color:#64748b; margin-left:0.5rem;">(${item.partOfSpeech})</span>
+                    </div>
+                `).join('');
+            }
 
-        searchDropdown.style.display = 'block';
+            // Sync structural class name from CSS
+            searchDropdown.className = 'search-dropdown-list';
+            searchDropdown.style.display = 'block';
 
-        searchDropdown.querySelectorAll('.dropdown-row-item').forEach(row => {
-            row.addEventListener('click', () => {
-                loadWordDetailPage(row.getAttribute('data-word'));
+            searchDropdown.querySelectorAll('.dropdown-row-item').forEach(row => {
+                row.addEventListener('click', () => {
+                    loadWordDetailPage(row.getAttribute('data-word'));
+                });
             });
         });
-    });
 
-    // Close search dropdown if user clicks away
-    document.addEventListener('click', (e) => {
-        if (!searchBar.contains(e.target) && !searchDropdown.contains(e.target)) {
-            searchDropdown.style.display = 'none';
-        }
-    });
+        document.addEventListener('click', (e) => {
+            if (!searchBar.contains(e.target) && !searchDropdown.contains(e.target)) {
+                searchDropdown.style.display = 'none';
+            }
+        });
+    }
 
     // --- Quiz Engine Instance Factory ---
     function setupQuizEngine(rootContext) {
@@ -291,7 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const optionsContainer = rootContext.querySelector('#quizOptionsContainer');
         const actionWrapper = rootContext.querySelector('#quizActionWrapper');
 
-        if(!questionBox) return; // Guard frame if section missing from runtime scope
+        if(!questionBox) return;
 
         function loadQuestion() {
             hasAnsweredCurrent = false;
@@ -299,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
             optionsContainer.innerHTML = '';
             
             let currentQ = quizDatabase[currentQuestionIndex];
-            progressText.innerText = `प्रश्न ${currentQuestionIndex + 1}/५`;
+            if (progressText) progressText.innerText = `प्रश्न ${currentQuestionIndex + 1}/५`;
             questionBox.innerText = currentQ.q;
 
             currentQ.o.forEach((option, index) => {
@@ -321,10 +329,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (selectedIndex === currentQ.a) {
                 clickedButton.classList.add('correct-flash');
                 userScore++;
-                scoreText.innerText = `गुण: ${userScore}`;
+                if (scoreText) scoreText.innerText = `गुण: ${userScore}`;
             } else {
                 clickedButton.classList.add('wrong-flash');
-                allOptionButtons[currentQ.a].classList.add('correct-flash');
+                if (allOptionButtons[currentQ.a]) allOptionButtons[currentQ.a].classList.add('correct-flash');
             }
 
             const actionBtn = document.createElement('button');

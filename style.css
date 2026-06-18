@@ -137,6 +137,7 @@ body {
 /* Brand New Eye-Catching Bordered Search Container Layout */
 .search-container-box {
     padding: 0 1.2rem 1.2rem 1.2rem;
+    position: relative;
 }
 
 .search-wrapper {
@@ -301,9 +302,7 @@ body {
     color: var(--text-muted);
 }
 
-/* ==========================================================================
-   ADDED SYSTEM RULES: Dynamic Quiz Framework & Alphabet Spacings (Maintained Aesthetic)
-   ========================================================================== */
+/* Dynamic Quiz Framework & Alphabet Spacings */
 .section-title-badge {
     font-size: 0.9rem;
     font-weight: bold;
@@ -436,11 +435,8 @@ body {
     font-weight: 600;
     cursor: pointer;
 }
-/* ==========================================================================
-   ADDED SYSTEM RULES: Letter List View Layout Upgrades
-   ========================================================================== */
 
-/* Gives the letter title the exact premium color and large heading font scale */
+/* Letter List View Layout Upgrades */
 .entry-letter-title {
     font-size: 2.2rem !important;
     color: var(--primary-dark) !important;
@@ -450,7 +446,6 @@ body {
     margin-bottom: 1.5rem !important;
 }
 
-/* Stacks word row entries cleanly downwards */
 .letter-words-list-stack {
     display: flex;
     flex-direction: column;
@@ -458,15 +453,14 @@ body {
     margin-top: 1rem;
 }
 
-/* Ensures words display large, prominent, and strictly left-aligned */
 .letter-word-row-item {
     width: 100%;
-    text-align: left; /* Standard Left Alignment */
+    text-align: left;
     padding: 14px 18px;
     background-color: var(--bg-canvas);
     border: 1px solid var(--border-light);
     border-radius: 6px;
-    font-size: 1.15rem; /* Larger font size for premium legibility */
+    font-size: 1.15rem;
     font-weight: 700;
     color: var(--text-primary);
     cursor: pointer;
@@ -476,17 +470,14 @@ body {
 .letter-word-row-item:hover, .letter-word-row-item:active {
     background-color: #f1f5f9;
     border-color: var(--accent-gold);
-    padding-left: 22px; /* Subtle modern slide movement on click */
+    padding-left: 22px;
 }
-/* ==========================================================================
-   ADDED SYSTEM RULES: Search Dropdown Styling
-   ========================================================================== */
 
-/* Dropdown list container matching search-wrapper dimensions */
+/* Search Dropdown Panel Alignment Logic Fixes */
 .search-dropdown-list {
     position: absolute;
-    width: 100%;
-    left: 0;
+    width: calc(100% - 2.4rem);
+    left: 1.2rem;
     top: 100%;
     background: white;
     border: 2px solid var(--accent-gold);
@@ -498,25 +489,22 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Individual suggestion items in the list */
 .dropdown-row-item {
     padding: 0.9rem 1.2rem;
     cursor: pointer;
     font-weight: 700;
     border-bottom: 1px solid var(--border-light);
     color: var(--primary-dark);
-    text-align: left; /* Kept standard left-aligned */
+    text-align: left;
     font-size: 1.05rem;
     transition: background 0.2s ease;
 }
 
-/* Hover and active states for the dropdown items */
 .dropdown-row-item:hover, .dropdown-row-item:active {
     background-color: #f1f5f9;
     color: var(--text-primary);
 }
 
-/* Removes line border on the last search element */
 .dropdown-row-item:last-child {
     border-bottom: none;
 }

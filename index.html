@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>मराठी शब्द संजीवनी</title>
 
+    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-B5VDJRLQKT"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-B5VDJRLQKT');
     </script>
 
@@ -18,12 +18,14 @@
 </head>
 <body>
 
+    <!-- मुख्य शीर्षक आणि नॅव्हिगेशन -->
     <header class="oxford-header">
         <div class="header-top">
-            <div class="brand-group">
+            <div class="brand-group" id="siteBrandGroup" style="cursor: pointer;">
                 <h1 class="site-title">मराठी शब्द संजीवनी</h1>
                 <p class="site-tagline">रुजवूया मराठी शब्दांचे वैभव</p>
             </div>
+            <!-- मेनू बटन -->
             <button class="menu-toggle" id="menuBtn" aria-label="मेनू उघडा">
                 <span class="bar"></span>
                 <span class="bar"></span>
@@ -31,6 +33,7 @@
             </button>
         </div>
         
+        <!-- शोध पट्टी -->
         <div class="search-container-box">
             <div class="search-wrapper">
                 <input type="text" id="searchBar" placeholder="शब्दाचा अर्थ शोधा... (उदा. इत्यंभूत)">
@@ -40,33 +43,41 @@
                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </svg>
                 </div>
+                <!-- शोध निकालांची सूची ड्रॉपडाउन -->
+                <div id="searchDropdown" class="search-dropdown-list" style="display: none; position: absolute; width: 100%; left: 0; top: 100%; background: #fff; border: 1px solid var(--border-light); border-top: none; z-index: 999; max-height: 250px; overflow-y: auto; border-radius: 0 0 8px 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);"></div>
             </div>
         </div>
     </header>
 
+    <!-- पार्श्वभूमी अंधुक करणारा पडदा -->
     <div class="menu-overlay" id="menuOverlay"></div>
 
+    <!-- बाजूची नॅव्हिगेशन पट्टी -->
     <nav class="side-nav" id="sideNav">
         <ul>
-            <li><a href="#" onclick="window.location.reload();">मुख्य पृष्ठ</a></li>
-            <li><a href="#alphabetSection" onclick="toggleMenu()">शब्दसंग्रह सूची</a></li>
-            <li><a href="#quizSection" onclick="toggleMenu()">शब्दसंग्रह चाचणी</a></li>
-            <li><a href="#wordOfTheDaySection" onclick="toggleMenu()">आजचा मुख्य शब्द</a></li>
+            <li><a href="#" id="navHome">मुख्य पृष्ठ</a></li>
+            <li><a href="#" id="navAlphabet">शब्दसंग्रह सूची</a></li>
+            <li><a href="#" id="navQuiz">शब्दसंग्रह चाचणी</a></li>
+            <li><a href="#" id="navWotd">आजचा मुख्य शब्द</a></li>
         </ul>
     </nav>
 
     <main class="main-layout">
+        <!-- जाहिरात जागा -->
         <div class="ad-placeholder banner-ad">
             <span>जाहिरात</span>
         </div>
 
+        <!-- मुख्य मजकूर क्षेत्र (पान बदलण्यासाठी) -->
         <div id="entryContainer">
+            <!-- मुख्य पानावरील एकत्रित घटक -->
             <div class="homepage-default" id="homepageDefault">
                 
+                <!-- १. आजचा मुख्य शब्द विभाग -->
                 <section id="wordOfTheDaySection" class="word-entry">
                     <div class="section-title-badge">आजचा मुख्य शब्द</div>
                     <div class="entry-header">
-                        <h2 class="headword">ईषत</h2>
+                        <h2 class="headword" style="cursor: pointer;" id="wotdLink">ईषत</h2>
                         <span class="pos">क्रियाविशेषण</span>
                     </div>
                     <ol class="definitions-list">
@@ -75,13 +86,15 @@
                             <div class="example-item">आज हवेत ईषत गारवा जाणवत आहे.</div>
                         </li>
                     </ol>
-                    <a href="#" class="section-redirect-link">→ मागील 'आजचे शब्द' संग्रह पहा</a>
+                    <a href="#" id="viewAllWotdLink" class="section-redirect-link">→ मागील 'आजचे शब्द' संग्रह पहा</a>
                 </section>
 
+                <!-- जाहिरात जागा -->
                 <div class="ad-placeholder banner-ad">
                     <span>जाहिरात</span>
                 </div>
 
+                <!-- २. परस्परसंवादी शब्दसंग्रह चाचणी -->
                 <section id="quizSection" class="word-entry">
                     <div class="section-title-badge">शब्दसंग्रह चाचणी</div>
                     <div class="quiz-card">
@@ -95,14 +108,17 @@
                     </div>
                 </section>
 
+                <!-- ३. अक्षरक्रमानुसार शब्द शोध सूची -->
                 <section id="alphabetSection" class="word-entry">
                     <div class="section-title-badge">अक्षरक्रमानुसार शब्द शोधा</div>
                     <p class="section-intro-text">खालील कोणत्याही अक्षरावर क्लिक करून त्या अक्षरापासून सुरू होणारे शब्द पहा:</p>
                     
-                    <div class="alphabet-container">
+                    <div class="alphabet-container" id="alphabetGridContainer">
+                        <!-- स्वर -->
                         <div class="alphabet-row"><span>अ</span><span>आ</span><span>इ</span><span>ई</span><span>उ</span><span>ऊ</span></div>
                         <div class="alphabet-row"><span>ए</span><span>ऐ</span><span>ओ</span><span>औ</span><span>अं</span><span>अः</span></div>
                         <hr class="grid-divider">
+                        <!-- व्यंजने -->
                         <div class="alphabet-row"><span>क</span><span>ख</span><span>ग</span><span>घ</span><span>ङ</span></div>
                         <div class="alphabet-row"><span>च</span><span>छ</span><span>ज</span><span>झ</span><span>ञ</span></div>
                         <div class="alphabet-row"><span>ट</span><span>ठ</span><span>ड</span><span>ढ</span><span>ण</span></div>
@@ -117,6 +133,7 @@
             </div>
         </div>
 
+        <!-- तळटीप -->
         <footer class="oxford-footer">
             <div class="social-links">
                 <a href="https://www.instagram.com/marathi.shabda.sanjivani" target="_blank" class="social-icon-btn" aria-label="इन्स्टाग्राम">
@@ -126,14 +143,12 @@
                         <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                     </svg>
                 </a>
-                
                 <a href="https://youtube.com/@marathi.shabda.sanjivani" target="_blank" class="social-icon-btn" aria-label="युट्यूब">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path>
                         <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>
                     </svg>
                 </a>
-
                 <a href="https://www.facebook.com/share/1EW56uHkJa/" target="_blank" class="social-icon-btn" aria-label="फेसबुक">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>

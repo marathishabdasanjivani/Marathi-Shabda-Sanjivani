@@ -248,7 +248,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Direct matching logic cleanup
         const matches = dictionaryData.filter(item => item.word.toLowerCase().includes(inputVal));
 
         if (matches.length === 0) {

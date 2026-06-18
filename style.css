@@ -436,3 +436,45 @@ body {
     font-weight: 600;
     cursor: pointer;
 }
+/* ==========================================================================
+   ADDED SYSTEM RULES: Letter List View Layout Upgrades
+   ========================================================================== */
+
+/* Gives the letter title the exact premium color and large heading font scale */
+.entry-letter-title {
+    font-size: 2.2rem !important;
+    color: var(--primary-dark) !important;
+    font-weight: 700 !important;
+    border-bottom: 2px solid var(--primary-dark);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem !important;
+}
+
+/* Stacks word row entries cleanly downwards */
+.letter-words-list-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 1rem;
+}
+
+/* Ensures words display large, prominent, and strictly left-aligned */
+.letter-word-row-item {
+    width: 100%;
+    text-align: left; /* Standard Left Alignment */
+    padding: 14px 18px;
+    background-color: var(--bg-canvas);
+    border: 1px solid var(--border-light);
+    border-radius: 6px;
+    font-size: 1.15rem; /* Larger font size for premium legibility */
+    font-weight: 700;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.letter-word-row-item:hover, .letter-word-row-item:active {
+    background-color: #f1f5f9;
+    border-color: var(--accent-gold);
+    padding-left: 22px; /* Subtle modern slide movement on click */
+}

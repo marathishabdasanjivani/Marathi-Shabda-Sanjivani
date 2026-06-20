@@ -315,7 +315,7 @@ body {
 .section-redirect-link {
     display: inline-block;
     margin-top: 1rem;
-    color: #c5a880;
+    color: #1e293b; /* Set directly to match premium ink */
     text-decoration: none;
     font-weight: 600;
     font-size: 0.95rem;
@@ -386,6 +386,7 @@ body {
     font-weight: 600;
     margin-bottom: 1.2rem;
     color: var(--text-primary);
+    white-space: pre-line; /* Allows linebreaks inside strings to render smoothly */
 }
 
 .quiz-options-stack {

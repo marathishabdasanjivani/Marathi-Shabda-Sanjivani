@@ -281,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Quiz Engine Instance Factory ---
     function setupQuizEngine(rootContext) {
-         const quizDatabase = [
+        const quizDatabase = [
             { 
                 q: "१. खालीलपैकी कुठला शब्द 'कमी मीठ किंवा मीठ नसलेले जेवण' हा अर्थ दर्शवण्यासाठी अगदी अचूक बसेल?\n\n“भाजीत मीठ टाकायला विसरल्यामुळे, आजचे जेवण सर्वांनाच ________ वाटले.”", 
                 o: ["(अ) अळणी", "(ब) आर्तहाक", "(क) इत्यंभूत", "(ड) ईषत"], 
@@ -308,7 +308,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 a: 0 
             }
         ];
-
 
         let currentQuestionIndex = 0;
         let userScore = 0;

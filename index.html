@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>मराठी शब्दसंजीवनी - प्रगत डिजिटल शब्दकोश</title>
+    <title>मराठी शब्द संजीवनी - प्रगत डिजिटल शब्दकोश</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
     <header class="oxford-header">
         <div class="header-top">
             <div id="siteBrandGroup" style="cursor: pointer;">
-                <h1 class="site-title">मराठी शब्दसंजीवनी</h1>
+                <h1 class="site-title">मराठी शब्द संजीवनी</h1>
                 <p class="site-tagline">अभिजात शब्दांचा अस्सल खजिना</p>
             </div>
             <button class="menu-toggle" id="menuBtn" aria-label="मुख्य मेनू">
@@ -23,7 +23,7 @@
 
         <div class="search-container-box">
             <div class="search-wrapper">
-                <input type="text" id="searchBar" placeholder="कोणताही मराठी किंवा इंग्रजी शब्द शोधा...">
+                <input type="text" id="searchBar" placeholder="कोणताही मराठी शब्द शोधा...">
                 <span class="search-icon-holder">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="11" cy="11" r="8"></circle>
@@ -49,6 +49,8 @@
     <main class="main-layout" id="entryContainer">
         <div id="homepageDefault">
             
+            <div class="ad-placeholder banner-ad">जाहिरात जागा (Ad Slot)</div>
+
             <section class="word-entry" id="wordOfTheDaySection">
                 <div class="section-title-badge">आजचा शब्द (Word of the Day)</div>
                 <div class="entry-header" style="border-bottom: 1.5px solid var(--accent-gold);">
@@ -59,6 +61,20 @@
                     [खाद्यपदार्थांविषयी] ज्या जेवणात किंवा पदार्थात मीठ घातलेले नाही किंवा मिठाचे प्रमाण अत्यंत कमी आहे असा पदार्थ.
                 </p>
                 <a href="#" id="viewAllWotdLink" class="section-redirect-link">→ मागील दिवसांचे शब्द पहा</a>
+            </section>
+
+            <div class="ad-placeholder banner-ad">जाहिरात जागा (Ad Slot)</div>
+
+            <section class="word-entry" id="quizSection">
+                <div class="quiz-card">
+                    <div class="quiz-header">
+                        <span id="quizProgress">प्रश्न १/५</span>
+                        <span id="quizScore">गुण: ०</span>
+                    </div>
+                    <div class="quiz-question" id="quizQuestionBox">लोड होत आहे...</div>
+                    <div class="quiz-options-stack" id="quizOptionsContainer"></div>
+                    <div class="quiz-action-footer" id="quizActionWrapper"></div>
+                </div>
             </section>
 
             <div class="ad-placeholder banner-ad">जाहिरात जागा (Ad Slot)</div>
@@ -86,33 +102,6 @@
                 </div>
             </section>
 
-            <div class="ad-placeholder banner-ad">जाहिरात जागा (Ad Slot)</div>
-
-            <section class="word-entry" id="learnBasicSection">
-                <div class="section-title-badge">मराठी भाषा शिका (Learn Basic Marathi)</div>
-                <p class="section-intro-text">दैनिक व्यवहारात लागणारी सोपी वाक्ये आणि त्यांचे अर्थ येथे अभ्यासा:</p>
-                <div style="background: var(--bg-canvas); padding: 1rem; border-radius: 6px; border: 1px solid var(--border-light); margin-bottom: 1rem;">
-                    <ul style="margin: 0; padding-left: 1.2rem; line-height: 1.8;">
-                        <li><strong>आपले स्वागत आहे!</strong> (Welcome!)</li>
-                        <li><strong>तुम्ही कसे आहात?</strong> (How are you?)</li>
-                        <li><strong>मला समजले नाही.</strong> (I did not understand.)</li>
-                        <li><strong>पुन्हा भेटू.</strong> (See you again.)</li>
-                    </ul>
-                </div>
-            </section>
-
-            <section class="word-entry" id="quizSection">
-                <div class="quiz-card">
-                    <div class="quiz-header">
-                        <span id="quizProgress">प्रश्न १/५</span>
-                        <span id="quizScore">गुण: ०</span>
-                    </div>
-                    <div class="quiz-question" id="quizQuestionBox">लोड होत आहे...</div>
-                    <div class="quiz-options-stack" id="quizOptionsContainer"></div>
-                    <div class="quiz-action-footer" id="quizActionWrapper"></div>
-                </div>
-            </section>
-
         </div>
     </main>
 
@@ -127,11 +116,11 @@
             <a href="https://facebook.com" target="_blank" class="social-icon-btn" aria-label="Facebook">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
             </a>
-            <a href="mailto:contact@marathishabdasanjivani.com" class="social-icon-btn" aria-label="Email Contact">
+            <a href="mailto:marathi.shabda.sanjivani@gmail.com" class="social-icon-btn" aria-label="Email Contact">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
             </a>
         </div>
-        <p class="footer-credit">© 2026 मराठी शब्दसंजीवनी. सर्व हक्क सुरक्षित. | रचनाकार: द आर्यन इंकवेल</p>
+        <p class="footer-credit">© 2026 मराठी शब्द संजीवनी. सर्व हक्क सुरक्षित. | रचनाकार: द आर्यन इंकवेल</p>
     </footer>
 
     <script src="script.js"></script>

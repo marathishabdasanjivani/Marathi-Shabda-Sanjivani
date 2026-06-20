@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(err => console.error("डेटाबेस लोड करताना त्रुटी आली:", err));
 
     // --- Dynamic Routing Control System ---
-    function showPage(elementHTML, onRenderCallback = null) {
+    function showPage(elementHTML, onRenderCallback = null, pushState = true) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         entryContainer.innerHTML = '';
         
@@ -52,17 +52,45 @@ document.addEventListener('DOMContentLoaded', () => {
         if (onRenderCallback) onRenderCallback();
         if (searchDropdown) searchDropdown.style.display = 'none';
         if (searchBar) searchBar.value = '';
+
+        // Handle history state insertion to fix browser back exit issue
+        if (pushState) {
+            history.pushState({ pageView: "subpage" }, "");
+        }
     }
 
-    function loadHomepage() {
+    function loadHomepage(pushState = true) {
         const homeNode = cachedHomepage.cloneNode(true);
-        showPage(homeNode);
+        // Set pushState to false if we are resetting layout via native back button event execution
+        showPage(homeNode, null, pushState);
         initializeRoutingEvents(homeNode);
         setupQuizEngine(homeNode);
+
+        if (pushState) {
+            history.pushState({ pageView: "home" }, "");
+        }
     }
 
-    if (siteBrandGroup) siteBrandGroup.addEventListener('click', loadHomepage);
-    if (navHome) navHome.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); loadHomepage(); });
+    // Monitor back actions using browser state pop events instead of exiting the site
+    window.addEventListener('popstate', (event) => {
+        if (event.state && event.state.pageView === "home") {
+            // Keep on home layout safely
+            const homeNode = cachedHomepage.cloneNode(true);
+            entryContainer.innerHTML = '';
+            entryContainer.appendChild(homeNode);
+            initializeRoutingEvents(homeNode);
+            setupQuizEngine(homeNode);
+        } else {
+            // Revert back safely from a word view straight into the cached main application loop
+            loadHomepage(false);
+        }
+    });
+
+    // Initialize tracking token baseline on standard application entry boot point
+    history.replaceState({ pageView: "home" }, "");
+
+    if (siteBrandGroup) siteBrandGroup.addEventListener('click', () => loadHomepage(true));
+    if (navHome) navHome.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); loadHomepage(true); });
 
     // Handle specific standalone component paths
     if (navWotd) {
@@ -125,7 +153,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Page 1: Standalone Alphabet Letter Category Page ---
     function renderLetterPage(letter) {
-        const matchedWords = dictionaryData.filter(item => item.word.trim().startsWith(letter));
+        // Matches only words that strictly start with the requested letter
+        const matchedWords = dictionaryData.filter(item => {
+            const wordStr = item.word.trim();
+            // Match strict start and guard against separate distinct vowels like checking 'अ' vs 'अं'
+            if (letter === "अ" && wordStr.startsWith("अं")) return false;
+            return wordStr.startsWith(letter);
+        });
         
         let letterPageHTML = `
             <div class="word-entry">
@@ -260,7 +294,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const matches = dictionaryData.filter(item => item.word.toLowerCase().includes(inputVal));
+            // Strictly filter using startsWith, separate distinct vowels like 'अ' vs 'अं'
+            const matches = dictionaryData.filter(item => {
+                const wordLow = item.word.toLowerCase();
+                if (inputVal === "अ" && wordLow.startsWith("अं")) return false;
+                return wordLow.startsWith(inputVal);
+            });
 
             if (matches.length === 0) {
                 searchDropdown.innerHTML = `<div style="padding: 0.8rem; color: #64748b; font-size: 0.95rem; text-align: center;">शब्द सापडले नाहीत.</div>`;

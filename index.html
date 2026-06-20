@@ -8,6 +8,7 @@
 </head>
 <body>
 
+    <!-- Premium Brand Header Layer -->
     <header class="oxford-header">
         <div class="header-top">
             <div id="siteBrandGroup" style="cursor: pointer;">
@@ -21,6 +22,7 @@
             </button>
         </div>
 
+        <!-- Premium Eye-Catching Bordered Search Component -->
         <div class="search-container-box">
             <div class="search-wrapper">
                 <input type="text" id="searchBar" placeholder="कोणताही मराठी शब्द शोधा...">
@@ -31,12 +33,15 @@
                     </svg>
                 </span>
             </div>
+            <!-- Dynamic suggestion matrix loaded via runtime hook -->
             <div id="searchDropdown" style="display: none;"></div>
         </div>
     </header>
 
+    <!-- Dimming Background Overlay Layer -->
     <div class="menu-overlay" id="menuOverlay"></div>
 
+    <!-- Sliding Sidebar Frame Context -->
     <nav class="side-nav" id="sideNav">
         <ul>
             <li><a href="#" id="navHome">मुख्य पृष्ठ (Home)</a></li>
@@ -46,11 +51,14 @@
         </ul>
     </nav>
 
+    <!-- Main Dynamic Application Container Layout -->
     <main class="main-layout" id="entryContainer">
         <div id="homepageDefault">
             
+            <!-- Monetization Block 1: Immediately Below Search Bar -->
             <div class="ad-placeholder banner-ad">जाहिरात जागा (Ad Slot)</div>
 
+            <!-- Context Component 1: Word of the Day Frame -->
             <section class="word-entry" id="wordOfTheDaySection">
                 <div class="section-title-badge">आजचा शब्द (Word of the Day)</div>
                 <div class="entry-header" style="border-bottom: 1.5px solid var(--accent-gold);">
@@ -63,8 +71,10 @@
                 <a href="#" id="viewAllWotdLink" class="section-redirect-link">→ मागील दिवसांचे शब्द पहा</a>
             </section>
 
+            <!-- Monetization Block 2: After WOTD -->
             <div class="ad-placeholder banner-ad">जाहिरात जागा (Ad Slot)</div>
 
+            <!-- Context Component 2: Dynamic Gamified Quiz Widget Module -->
             <section class="word-entry" id="quizSection">
                 <div class="quiz-card">
                     <div class="quiz-header">
@@ -77,27 +87,34 @@
                 </div>
             </section>
 
+            <!-- Monetization Block 3: After Quiz -->
             <div class="ad-placeholder banner-ad">जाहिरात जागा (Ad Slot)</div>
 
+            <!-- Context Component 3: Dedicated Interactive Marathi Alphabet Grid Section -->
             <section class="word-entry" id="alphabetSection">
                 <div class="section-title-badge">मराठी वर्णमाला क्रमाने शोधा</div>
                 <p class="section-intro-text">खालील कोणत्याही अक्षरावर क्लिक करून त्या अक्षरापासून सुरू होणारे सर्व शब्द एकाच ठिकाणी अभ्यासा:</p>
                 
                 <div class="alphabet-container">
+                    <!-- Standard Marathi Vowels: 6 + 6 -->
                     <div class="alphabet-row"><span>अ</span><span>आ</span><span>इ</span><span>ई</span><span>उ</span><span>ऊ</span></div>
                     <hr class="grid-divider">
                     <div class="alphabet-row"><span>ए</span><span>ऐ</span><span>ओ</span><span>औ</span><span>अं</span><span>अः</span></div>
                     <hr class="grid-divider">
-                    <div class="alphabet-row"><span>क</span><span>ख</span><span>ग</span><span>घ</span><span>ङ</span><span>च</span></div>
+                    <!-- Standard Consonants Varg: Rows of 5 -->
+                    <div class="alphabet-row"><span>क</span><span>ख</span><span>ग</span><span>घ</span><span>ङ</span></div>
                     <hr class="grid-divider">
-                    <div class="alphabet-row"><span>छ</span><span>ज</span><span>झ</span><span>ञ</span><span>ट</span><span>ठ</span></div>
+                    <div class="alphabet-row"><span>च</span><span>छ</span><span>ज</span><span>झ</span><span>ञ</span></div>
                     <hr class="grid-divider">
-                    <div class="alphabet-row"><span>ड</span><span>ढ</span><span>ण</span><span>त</span><span>थ</span><span>द</span></div>
+                    <div class="alphabet-row"><span>ट</span><span>ठ</span><span>ड</span><span>ढ</span><span>ण</span></div>
                     <hr class="grid-divider">
-                    <div class="alphabet-row"><span>ध</span><span>न</span><span>प</span><span>फ</span><span>ब</span><span>भ</span></div>
+                    <div class="alphabet-row"><span>त</span><span>थ</span><span>द</span><span>ध</span><span>न</span></div>
                     <hr class="grid-divider">
-                    <div class="alphabet-row"><span>म</span><span>य</span><span>र</span><span>ल</span><span>व</span><span>श</span></div>
+                    <div class="alphabet-row"><span>प</span><span>फ</span><span>ब</span><span>भ</span><span>म</span></div>
                     <hr class="grid-divider">
+                    <div class="alphabet-row"><span>य</span><span>र</span><span>ल</span><span>व</span><span>श</span></div>
+                    <hr class="grid-divider">
+                    <!-- Remaining Consonants + Joints: Row of 6 -->
                     <div class="alphabet-row"><span>ष</span><span>स</span><span>ह</span><span>ळ</span><span>क्ष</span><span>ज्ञ</span></div>
                 </div>
             </section>
@@ -105,6 +122,7 @@
         </div>
     </main>
 
+    <!-- Vector Social Architecture Block Footer -->
     <footer class="oxford-footer">
         <div class="social-links">
             <a href="https://instagram.com" target="_blank" class="social-icon-btn" aria-label="Instagram">
@@ -123,6 +141,7 @@
         <p class="footer-credit">© 2026 मराठी शब्द संजीवनी. सर्व हक्क सुरक्षित. | रचनाकार: द आर्यन इंकवेल</p>
     </footer>
 
+    <!-- Global Application Engine Script Execution Wire -->
     <script src="script.js"></script>
 </body>
 </html>

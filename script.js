@@ -1,386 +1,339 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const searchBar = document.getElementById('searchBar');
-    const searchDropdown = document.getElementById('searchDropdown');
-    const entryContainer = document.getElementById('entryContainer');
-    const homepageDefault = document.getElementById('homepageDefault');
-    const menuBtn = document.getElementById('menuBtn');
-    const sideNav = document.getElementById('sideNav');
-    const menuOverlay = document.getElementById('menuOverlay');
-    const siteBrandGroup = document.getElementById('siteBrandGroup');
-
-    // Sidebar Links
-    const navHome = document.getElementById('navHome');
-    const navAlphabet = document.getElementById('navAlphabet');
-    const navQuiz = document.getElementById('navQuiz');
-    const navWotd = document.getElementById('navWotd');
-
-    let dictionaryData = [];
-
-    // Clone templates to keep homepage state cached safely in memory
-    const cachedHomepage = homepageDefault.cloneNode(true);
-
-    function toggleMenu() {
-        menuBtn.classList.toggle('active');
-        sideNav.classList.toggle('open');
-        menuOverlay.classList.toggle('open');
+// Premium Dictionary Data Matrix Context
+const dictionaryData = {
+    "अळणी": {
+        word: "अळणी",
+        pos: "विशेषण",
+        definitions: [
+            "[खाद्यपदार्थांविषयी] ज्या जेवणात किंवा पदार्थात मीठ घातलेले नाही किंवा मिठाचे प्रमाण अत्यंत कमी आहे असा पदार्थ.",
+            "ज्या गोष्टीमध्ये कसलाही रस, गोडी किंवा उत्साह उरलेला नाही अशी स्थिती; मिळमिळीत."
+        ],
+        vakyaprachar: "अळणी जीवन जगणे (उत्साहाशिवाय आयुष्य कंठणे)."
+    },
+    "इत्यंभूत": {
+        word: "इत्यंभूत",
+        pos: "विशेषण / क्रियाविशेषण",
+        definitions: [
+            "सुरुवातीपासून शेवटपर्यंत सविस्तर; काहीही न गाळता जसे घडले तसे हुबेहूब (Detailed / A to Z).",
+            "एखाद्या प्रकरणाची किंवा प्रसंगाची संपूर्ण सत्य माहिती असणे."
+        ],
+        vakyaprachar: "इत्यंभूत माहिती काढणे (मूळापासून सर्व गुप्त किंवा उघड माहिती मिळवणे)."
+    },
+    "ईषत": {
+        word: "ईषत",
+        pos: "विशेषण / क्रियाविशेषण",
+        definitions: [
+            "अतिशय थोडे; किंचित किंवा अल्प प्रमाणात (Slightly / Minimal).",
+            "प्रमाण किंवा हालचालींमधील अत्यंत सूक्ष्म फरक दर्शवणारे रूप."
+        ],
+        vakyaprachar: "ईषत हास्य करणे (गालातल्या गालात अगदी थोडेसे हसणे)."
     }
+};
 
-    if (menuBtn) menuBtn.addEventListener('click', toggleMenu);
-    if (menuOverlay) menuOverlay.addEventListener('click', toggleMenu);
+// Application Global Nodes Selector
+const entryContainer = document.getElementById('entryContainer');
+const homepageDefault = document.getElementById('homepageDefault');
+const searchBar = document.getElementById('searchBar');
+const searchDropdown = document.getElementById('searchDropdown');
+const menuBtn = document.getElementById('menuBtn');
+const sideNav = document.getElementById('sideNav');
+const menuOverlay = document.getElementById('menuOverlay');
 
-    // Load Database Array
-    fetch('dictionary.json')
-        .then(res => res.json())
-        .then(data => { 
-            dictionaryData = data; 
-            initializeRoutingEvents(document); // Init first page
-            setupQuizEngine(document); 
-        })
-        .catch(err => console.error("डेटाबेस लोड करताना त्रुटी आली:", err));
+// Navigation Anchors
+const navHome = document.getElementById('navHome');
+const navAlphabet = document.getElementById('navAlphabet');
+const navWotd = document.getElementById('navWotd');
+const navQuiz = document.getElementById('navQuiz');
 
-    // --- Dynamic Routing Control System ---
-    function showPage(elementHTML, onRenderCallback = null) {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        entryContainer.innerHTML = '';
-        
-        if (typeof elementHTML === 'string') {
-            entryContainer.innerHTML = elementHTML;
-        } else {
-            entryContainer.appendChild(elementHTML);
-        }
+// Component Links
+const wotdLink = document.getElementById('wotdLink');
+const viewAllWotdLink = document.getElementById('viewAllWotdLink');
 
-        if (onRenderCallback) onRenderCallback();
-        if (searchDropdown) searchDropdown.style.display = 'none';
-        if (searchBar) searchBar.value = '';
+// --- 1. Premium Intercept Routing & Browser Back Engine ---
+function navigateToView(viewHtml, pushState = true) {
+    entryContainer.innerHTML = viewHtml;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    if (pushState) {
+        // Push a state token so clicking 'Back' stays on our app instead of exiting
+        history.pushState({ isWordPage: true }, "");
     }
+}
 
-    function loadHomepage() {
-        const homeNode = cachedHomepage.cloneNode(true);
-        showPage(homeNode);
-        initializeRoutingEvents(homeNode);
-        setupQuizEngine(homeNode);
-    }
+function restoreHomepage() {
+    entryContainer.innerHTML = '';
+    entryContainer.appendChild(homepageDefault);
+    searchBar.value = '';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-    if (siteBrandGroup) siteBrandGroup.addEventListener('click', loadHomepage);
-    if (navHome) navHome.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); loadHomepage(); });
+// Global Browser Back Button Event Handler
+window.addEventListener('popstate', function(event) {
+    // Whenever the browser's native back button is hit, safely slide back to homepage
+    restoreHomepage();
+});
 
-    // Handle specific standalone component paths
-    if (navWotd) {
-        navWotd.addEventListener('click', (e) => {
-            e.preventDefault();
-            toggleMenu();
-            const node = cachedHomepage.cloneNode(true);
-            const section = node.querySelector('#wordOfTheDaySection');
-            showPage(section);
-            initializeRoutingEvents(entryContainer);
-        });
-    }
+// Primary Home Nav Links
+navHome.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); restoreHomepage(); });
+document.getElementById('siteBrandGroup').addEventListener('click', () => { restoreHomepage(); });
 
-    if (navQuiz) {
-        navQuiz.addEventListener('click', (e) => {
-            e.preventDefault();
-            toggleMenu();
-            const node = cachedHomepage.cloneNode(true);
-            const section = node.querySelector('#quizSection');
-            showPage(section, () => { setupQuizEngine(entryContainer); });
-        });
-    }
+// Quick Routing Handlers for Home Modules
+if (wotdLink) {
+    wotdLink.addEventListener('click', () => { renderWordPage("अळणी"); });
+}
+if (viewAllWotdLink) {
+    viewAllWotdLink.addEventListener('click', (e) => { e.preventDefault(); scrollIntoSection('wordOfTheDaySection'); });
+}
+if (navWotd) {
+    navWotd.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); scrollIntoSection('wordOfTheDaySection'); });
+}
+if (navAlphabet) {
+    navAlphabet.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); scrollIntoSection('alphabetSection'); });
+}
+if (navQuiz) {
+    navQuiz.addEventListener('click', (e) => { e.preventDefault(); closeMenu(); scrollIntoSection('quizSection'); });
+}
 
-    if (navAlphabet) {
-        navAlphabet.addEventListener('click', (e) => {
-            e.preventDefault();
-            toggleMenu();
-            const node = cachedHomepage.cloneNode(true);
-            const section = node.querySelector('#alphabetSection');
-            showPage(section, () => { initializeRoutingEvents(entryContainer); });
-        });
-    }
+function scrollIntoSection(id) {
+    restoreHomepage();
+    setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 50);
+}
 
-    // Wire up events for embedded elements dynamically
-    function initializeRoutingEvents(context) {
-        // Alphabet Letter Selection Page Handler
-        const letterBoxes = context.querySelectorAll('.alphabet-container span');
-        letterBoxes.forEach(box => {
-            box.style.cursor = 'pointer';
-            box.addEventListener('click', () => {
-                const selectedLetter = box.innerText.trim();
-                renderLetterPage(selectedLetter);
-            });
-        });
+// --- 2. Word Entry Layout Engine (With Interspersed Ad Slots) ---
+function renderWordPage(wordKey) {
+    const data = dictionaryData[wordKey];
+    if (!data) return;
 
-        // WOTD text links
-        const wotdLink = context.querySelector('#wotdLink');
-        if(wotdLink) {
-            wotdLink.addEventListener('click', () => { loadWordDetailPage(wotdLink.innerText.trim()); });
-        }
-        const viewAllWotdLink = context.querySelector('#viewAllWotdLink');
-        if(viewAllWotdLink) {
-            viewAllWotdLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                const node = cachedHomepage.cloneNode(true);
-                showPage(node.querySelector('#wordOfTheDaySection'), () => { initializeRoutingEvents(entryContainer); });
-            });
-        }
-    }
+    // Headword Structure
+    let htmlContent = `
+        <div class="word-page-view">
+            <button class="back-btn-primary" id="backToHomeBtn">← मुख्य पृष्ठावर जा</button>
+            
+            <div class="ad-placeholder banner-ad">जाहिरात जागा (Ad Slot)</div>
 
-    // --- Page 1: Standalone Alphabet Letter Category Page ---
-    function renderLetterPage(letter) {
-        const matchedWords = dictionaryData.filter(item => item.word.trim().startsWith(letter));
-        
-        let letterPageHTML = `
-            <div class="word-entry">
-                <h2 class="headword entry-letter-title">अक्षर सूची: "${letter}"</h2>
+            <div class="word-card-hero">
+                <div class="entry-header" style="border-bottom: 2px solid var(--accent-gold); padding-bottom: 0.5rem;">
+                    <h2 class="headword" style="font-size: 2.2rem; color: #0f172a;">${data.word}</h2>
+                    <span class="pos">${data.pos}</span>
+                </div>
+    `;
+
+    // Definition 1 + Ad Slot Sandwich Setup
+    if (data.definitions && data.definitions[0]) {
+        htmlContent += `
+            <div class="definition-block">
+                <span class="def-counter">अर्थ १</span>
+                <p class="definition-text">${data.definitions[0]}</p>
+                <div class="line-metric-box">
+                    <span class="metric-label">समानार्थी:</span> <span class="metric-value">माहिती नाही</span>
+                </div>
+                <div class="line-metric-box">
+                    <span class="metric-label">सहसंबंधी:</span> <span class="metric-value">माहिती नाही</span>
+                </div>
+            </div>
+            </div> <!-- End of Primary Hero Card containing Def 1 -->
+            
+            <div class="ad-placeholder banner-ad">जाहिरात जागा (Ad Slot)</div>
         `;
+    }
 
-        if (matchedWords.length === 0) {
-            letterPageHTML += `<p style="color: #64748b; margin-top: 1.5rem;">या अक्षराचे शब्द अजून उपलब्ध नाहीत.</p>`;
-        } else {
-            letterPageHTML += `<div class="letter-words-list-stack">`;
-            matchedWords.forEach(w => {
-                letterPageHTML += `<button class="word-target-btn letter-word-row-item" data-word="${w.word}">${w.word}</button>`;
-            });
-            letterPageHTML += `</div>`;
-        }
+    // Definition 2 + Ad Slot Sandwich Setup
+    if (data.definitions && data.definitions[1]) {
+        htmlContent += `
+            <div class="word-card-hero" style="margin-top: 1rem;">
+            <div class="definition-block">
+                <span class="def-counter">अर्थ २</span>
+                <p class="definition-text">${data.definitions[1]}</p>
+                <div class="line-metric-box">
+                    <span class="metric-label">समानार्थी:</span> <span class="metric-value">माहिती नाही</span>
+                </div>
+                <div class="line-metric-box">
+                    <span class="metric-label">सहसंबंधी:</span> <span class="metric-value">माहिती नाही</span>
+                </div>
+            </div>
+            </div>
+            
+            <div class="ad-placeholder banner-ad">जाहिरात जागा (Ad Slot)</div>
+        `;
+    }
 
-        letterPageHTML += `
-                <a href="#" id="backToGridBtn" class="section-redirect-link" style="display: inline-block; margin-top: 2rem;">← मुख्य सूचीकडे परत जा</a>
+    // Definition 3 Placeholder Support + Ad Slot Sandwich Setup
+    if (data.definitions && data.definitions[2]) {
+        htmlContent += `
+            <div class="word-card-hero" style="margin-top: 1rem;">
+            <div class="definition-block">
+                <span class="def-counter">अर्थ ३</span>
+                <p class="definition-text">${data.definitions[2]}</p>
+                <div class="line-metric-box">
+                    <span class="metric-label">समानार्थी:</span> <span class="metric-value">माहिती नाही</span>
+                </div>
+                <div class="line-metric-box">
+                    <span class="metric-label">सहसंबंधी:</span> <span class="metric-value">माहिती नाही</span>
+                </div>
+            </div>
+            </div>
+            
+            <div class="ad-placeholder banner-ad">जाहिरात जागा (Ad Slot)</div>
+        `;
+    }
+
+    // Vakyaprachar Block at base
+    if (data.vakyaprachar) {
+        htmlContent += `
+            <div class="word-card-hero" style="margin-top: 1rem; border-left: 4px solid var(--accent-gold);">
+                <div class="vakyaprachar-container">
+                    <h3 style="font-size: 1.15rem; color: #1e293b; margin-bottom: 0.4rem;">वाक्यांत उपयोग / वाक्यप्रचार:</h3>
+                    <p class="vakyaprachar-text" style="font-style: italic; color: #475569; font-size: 1.05rem;">"${data.vakyaprachar}"</p>
+                </div>
             </div>
         `;
-
-        showPage(letterPageHTML, () => {
-            // Bind navigation click triggers to buttons
-            entryContainer.querySelectorAll('.word-target-btn').forEach(btn => {
-                btn.addEventListener('click', () => { loadWordDetailPage(btn.getAttribute('data-word')); });
-            });
-            entryContainer.querySelector('#backToGridBtn').addEventListener('click', (e) => {
-                e.preventDefault();
-                const node = cachedHomepage.cloneNode(true);
-                showPage(node.querySelector('#alphabetSection'), () => { initializeRoutingEvents(entryContainer); });
-            });
-        });
     }
 
-    // --- Page 2: Standalone Full Word Detail Page ---
-    function loadWordDetailPage(wordName) {
-        const item = dictionaryData.find(w => w.word.trim().toLowerCase() === wordName.trim().toLowerCase());
-        if(!item) return;
+    htmlContent += `</div>`; // Close overall view block
 
-        let wordHTML = `
-            <div class="word-entry">
-                <div class="entry-header">
-                    <h2 class="headword">${item.word}</h2>
-                    <span class="pos">${item.partOfSpeech}</span>
-                </div>
-        `;
+    // Push into DOM view frame
+    navigateToView(htmlContent, true);
 
-        if (item.grammarInfo) {
-            wordHTML += `
-                <div style="margin-bottom: 1.2rem; font-size: 0.95rem; background: #f8fafc; padding: 0.8rem; border-radius: 4px;">
-                    <strong style="color: var(--primary-dark);">व्याकरणिक माहिती:</strong>
-                    <ul style="margin: 0.3rem 0 0 0; padding-left: 1.2rem; color: #475569;">
-                        ${item.grammarInfo.forms ? `<li><strong>विविध रूपे:</strong> ${item.grammarInfo.forms}</li>` : ''}
-                        ${item.grammarInfo.pronunciation ? `<li><strong>उच्चार:</strong> ${item.grammarInfo.pronunciation}</li>` : ''}
-                    </ul>
-                </div>
-            `;
-        }
+    // Setup direct internal back button trigger
+    document.getElementById('backToHomeBtn').addEventListener('click', () => {
+        history.back(); // This triggers our window popstate listener perfectly
+    });
+}
 
-        wordHTML += `<div style="font-weight: bold; margin-bottom: 0.5rem; color: var(--primary-dark);">अर्थ आणि उदाहरणे:</div>`;
-        wordHTML += `<ol class="definitions-list">`;
-        item.meanings.forEach((m, index) => {
-            wordHTML += `
-                <li>
-                    <span class="definition-text">${m.definition}</span>
-                    <div class="example-item">${m.example}</div>
-                </li>
-            `;
-            if(index === 0 && item.meanings.length > 1) {
-                wordHTML += `</ol><div class="ad-placeholder">जाहिरात जागा</div><ol class="definitions-list" start="2">`;
-            }
-        });
-        wordHTML += `</ol>`;
-
-        if (item.idioms && item.idioms.length > 0) {
-            wordHTML += `
-                <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-light);">
-                    <strong style="color: var(--primary-dark); display: block; margin-bottom: 0.5rem;">वाक्प्रचार आणि म्हणी:</strong>
-                    <ul style="margin: 0; padding-left: 1.2rem;">
-                        ${item.idioms.map(idm => `
-                            <li style="margin-bottom: 0.8rem; font-size: 1.05rem;">
-                                <strong style="color: #000;">${idm.phrase}</strong>
-                                <span style="display:block; font-size: 0.95rem; color: #475569; margin: 0.2rem 0;">• अर्थ: ${idm.meaning}</span>
-                                <span style="display:block; font-size: 0.95rem; color: #64748b; font-style: italic;">• उदाहरण: ${idm.example}</span>
-                            </li>
-                        `).join('')}
-                    </ul>
-                </div>
-            `;
-        }
-
-        if (item.etymology) {
-            wordHTML += `
-                <div style="margin-top: 1.5rem; padding: 0.8rem; background: #f1f5f9; border-radius: 4px; font-size: 0.95rem; color: #475569;">
-                    <strong>व्युत्पत्ती (शब्दाचा उगम):</strong> ${item.etymology}
-                </div>
-            `;
-        }
-
-        if (item.synonyms || item.antonyms) {
-            wordHTML += `
-                <div style="margin-top: 1.2rem; display: flex; gap: 1.5rem; font-size: 0.95rem; border-top: 1px dashed var(--border-light); padding-top: 0.8rem;">
-                    ${item.synonyms ? `<div><strong style="color: #16a34a;">समानार्थी:</strong> ${item.synonyms}</div>` : ''}
-                    ${item.antonyms ? `<div><strong style="color: #dc2626;">विरुद्धार्थी:</strong> ${item.antonyms}</div>` : ''}
-                </div>
-            `;
-        }
-
-        wordHTML += `</div>`;
-        showPage(wordHTML);
+// --- 3. Live Suggestion & Search Infrastructure ---
+searchBar.addEventListener('input', (e) => {
+    const val = e.target.value.trim();
+    if (!val) {
+        searchDropdown.style.display = 'none';
+        return;
     }
 
-    // --- Search Dropdown Engine Hook ---
-    if (searchBar && searchDropdown) {
-        searchBar.addEventListener('input', (e) => {
-            const inputVal = e.target.value.trim().toLowerCase();
+    const matches = Object.keys(dictionaryData).filter(key => key.includes(val));
+    if (matches.length === 0) {
+        searchDropdown.innerHTML = `<div class="dropdown-item static-text">शब्द सापडला नाही</div>`;
+    } else {
+        searchDropdown.innerHTML = matches.map(m => `<div class="dropdown-item trigger-action" data-word="${m}">${m}</div>`).join('');
+    }
+    searchDropdown.style.display = 'block';
+});
 
-            if (inputVal.length === 0) {
-                searchDropdown.innerHTML = '';
-                searchDropdown.style.display = 'none';
-                return;
-            }
+searchDropdown.addEventListener('click', (e) => {
+    const target = e.target;
+    if (target.classList.contains('trigger-action')) {
+        const word = target.getAttribute('data-word');
+        searchDropdown.style.display = 'none';
+        renderWordPage(word);
+    }
+});
 
-            const matches = dictionaryData.filter(item => item.word.toLowerCase().includes(inputVal));
+document.addEventListener('click', (e) => {
+    if (!searchBar.contains(e.target) && !searchDropdown.contains(e.target)) {
+        searchDropdown.style.display = 'none';
+    }
+});
 
-            if (matches.length === 0) {
-                searchDropdown.innerHTML = `<div style="padding: 0.8rem; color: #64748b; font-size: 0.95rem; text-align: center;">शब्द सापडले नाहीत.</div>`;
-            } else {
-                searchDropdown.innerHTML = matches.map(item => `
-                    <div class="dropdown-row-item" data-word="${item.word}">
-                        ${item.word} <span style="font-size:0.8rem; font-weight:normal; color:#64748b; margin-left:0.5rem;">(${item.partOfSpeech})</span>
-                    </div>
-                `).join('');
-            }
+// Alphabet Grid Direct Link Execution Runtime Wiring
+document.querySelectorAll('.alphabet-row span').forEach(chip => {
+    chip.addEventListener('click', () => {
+        const char = chip.textContent.trim();
+        searchBar.value = char;
+        searchBar.focus();
+        searchBar.dispatchEvent(new Event('input'));
+    });
+});
 
-            // Sync structural class name from CSS
-            searchDropdown.className = 'search-dropdown-list';
-            searchDropdown.style.display = 'block';
+// --- 4. Sidebar Draw Mechanics ---
+function openMenu() {
+    sideNav.classList.add('active');
+    menuOverlay.classList.add('active');
+    menuBtn.classList.add('open');
+}
+function closeMenu() {
+    sideNav.classList.remove('active');
+    menuOverlay.classList.remove('active');
+    menuBtn.classList.remove('open');
+}
+menuBtn.addEventListener('click', () => {
+    if (sideNav.classList.contains('active')) closeMenu();
+    else openMenu();
+});
+menuOverlay.addEventListener('click', closeMenu);
 
-            searchDropdown.querySelectorAll('.dropdown-row-item').forEach(row => {
-                row.addEventListener('click', () => {
-                    loadWordDetailPage(row.getAttribute('data-word'));
-                });
-            });
-        });
+// --- 5. Interactive Gamified Quiz Runtime Code ---
+const quizData = [
+    { q: "सविस्तर माहिती गोळा करणे या अर्थाचा अचूक शब्द कोणता?", o: ["ईषत", "इत्यंभूत", "अळणी", "विस्तृत"], a: "इत्यंभूत" },
+    { q: "'अळणी' या शब्दाचा अन्नपदार्थाव्यतिरिक्त दुसरा अर्थ काय?", o: ["गोड", "तिखट", "मिळमिळीत / नीरस", "कडू"], a: "मिळमिळीत / नीरस" },
+    { q: "अगदी किंचित किंवा सूक्ष्म प्रमाणात या अर्थासाठी कोणता शब्द वापरतात?", o: ["ईषत", "साविस्तर", "भरपूर", "अळणी"], a: "ईषत" }
+];
+let currentQuizIdx = 0;
+let score = 0;
 
-        document.addEventListener('click', (e) => {
-            if (!searchBar.contains(e.target) && !searchDropdown.contains(e.target)) {
-                searchDropdown.style.display = 'none';
+function initQuizModule() {
+    const qBox = document.getElementById('quizQuestionBox');
+    const optsBox = document.getElementById('quizOptionsContainer');
+    const prog = document.getElementById('quizProgress');
+    const scoreBox = document.getElementById('quizScore');
+    const footer = document.getElementById('quizActionWrapper');
+
+    if (!qBox || !optsBox) return;
+
+    if (currentQuizIdx >= quizData.length) {
+        prog.textContent = "चाचणी पूर्ण!";
+        qBox.textContent = `अभिनंदन! तुम्ही ३ पैकी ${score} गुण मिळवले आहेत.`;
+        optsBox.innerHTML = '';
+        footer.innerHTML = `<button class="back-btn-primary" onclick="resetQuizApp()" style="margin-top:0.5rem; width:100%;">पुन्हा प्रयत्न करा</button>`;
+        return;
+    }
+
+    const currentItem = quizData[currentQuizIdx];
+    prog.textContent = `प्रश्न ${currentQuizIdx + 1}/${quizData.length}`;
+    scoreBox.textContent = `गुण: ${score}`;
+    qBox.textContent = currentItem.q;
+    footer.innerHTML = '';
+
+    optsBox.innerHTML = currentItem.o.map(opt => `
+        <button class="quiz-opt-row" onclick="evaluateQuizAnswer(this, '${opt}')">${opt}</button>
+    `).join('');
+}
+
+window.evaluateQuizAnswer = function(element, chosenOption) {
+    const currentItem = quizData[currentQuizIdx];
+    const allButtons = document.querySelectorAll('.quiz-opt-row');
+    allButtons.forEach(btn => btn.disabled = true);
+
+    if (chosenOption === currentItem.a) {
+        element.style.background = "#d1fae5";
+        element.style.borderColor = "#10b981";
+        score++;
+    } else {
+        element.style.background = "#fee2e2";
+        element.style.borderColor = "#ef4444";
+        allButtons.forEach(btn => {
+            if (btn.textContent.trim() === currentItem.a) {
+                btn.style.background = "#d1fae5";
+                btn.style.borderColor = "#10b981";
             }
         });
     }
 
-    // --- Quiz Engine Instance Factory ---
-    function setupQuizEngine(rootContext) {
-        const quizDatabase = [
-            { 
-                q: "१. खालीलपैकी कुठला शब्द 'कमी मीठ किंवा मीठ नसलेले जेवण' हा अर्थ दर्शवण्यासाठी अगदी अचूक बसेल?\n\n“भाजीत मीठ टाकायला विसरल्यामुळे, आजचे जेवण सर्वांनाच ________ वाटले.”", 
-                o: ["(अ) अळणी", "(ब) आर्तहाक", "(क) इत्यंभूत", "(ड) ईषत"], 
-                a: 0 
-            },
-            { 
-                q: "२. खालीलपैकी कुठला शब्द संकटात किंवा तीव्र वेदनेत मारलेल्या हाकेला दर्शवण्यासाठी वापरला जातो?\n\n“संकटात सापडलेल्या त्या पाखराने दिलेली ________ ऐकून, शिकारीसुद्धा क्षणभर थांबला.”", 
-                o: ["(अ) अळणी", "(ब) आर्तहाक", "(क) इत्यंभूत", "(ड) ईषत"], 
-                a: 1 
-            },
-            { 
-                q: "३. खालीलपैकी कुठला शब्द 'सुरुवातीपासून शेवटपर्यंत सविस्तर' या अर्थासाठी वापरला जातो?\n\n“पोलिसांनी चोराला पकडल्यानंतर, त्याने गुन्ह्याची ________ माहिती त्यांना दिली.”", 
-                o: ["(अ) अळणी", "(ब) आर्तहाक", "(क) इत्यंभूत", "(ड) ईषत"], 
-                a: 2 
-            },
-            { 
-                q: "४. खालीलपैकी कुठला शब्द 'किंचित किंवा अगदी थोडेसे' हा अर्थ स्पष्ट करण्यासाठी योग्य ठरेल?\n\n“त्याच्या त्या गंभीर चेहऱ्यावर अचानक उमललेले ________ हास्य बरेच काही सांगून गेले.”", 
-                o: ["(अ) अळणी", "(ब) आर्तहाक", "(क) इत्यंभूत", "(ड) ईषत"], 
-                a: 3 
-            },
-            { 
-                q: "५. खालीलपैकी कुठला शब्द 'जाणीवपूर्वक केलेले दुर्लक्ष किंवा हेळसांड' या अर्थाला पूर्ण करतो?\n\n“रात्रंदिवस मेहनत करूनही समाजाकडून होणारी आपली ________ पाहून त्या कलाकाराचे मन खिन्न झाले.”", 
-                o: ["(अ) उपेक्षा", "(ब) ऊरभरून", "(क) एकटाकी", "(ड) ऐनमेळ"], 
-                a: 0 
-            }
-        ];
+    const footer = document.getElementById('quizActionWrapper');
+    footer.innerHTML = `<button class="back-btn-primary" onclick="advanceQuizSequence()" style="margin-top:0.5rem; width:100%;">पुढील प्रश्न →</button>`;
+};
 
-        let currentQuestionIndex = 0;
-        let userScore = 0;
-        let hasAnsweredCurrent = false;
+window.advanceQuizSequence = function() {
+    currentQuizIdx++;
+    initQuizModule();
+};
 
-        const progressText = rootContext.querySelector('#quizProgress');
-        const scoreText = rootContext.querySelector('#quizScore');
-        const questionBox = rootContext.querySelector('#quizQuestionBox');
-        const optionsContainer = rootContext.querySelector('#quizOptionsContainer');
-        const actionWrapper = rootContext.querySelector('#quizActionWrapper');
+window.resetQuizApp = function() {
+    currentQuizIdx = 0;
+    score = 0;
+    initQuizModule();
+};
 
-        if(!questionBox) return;
-
-        function loadQuestion() {
-            hasAnsweredCurrent = false;
-            actionWrapper.innerHTML = '';
-            optionsContainer.innerHTML = '';
-            
-            let currentQ = quizDatabase[currentQuestionIndex];
-            if (progressText) progressText.innerText = `प्रश्न ${currentQuestionIndex + 1}/५`;
-            questionBox.innerText = currentQ.q;
-
-            currentQ.o.forEach((option, index) => {
-                const button = document.createElement('button');
-                button.className = 'quiz-opt-btn';
-                button.innerText = option;
-                button.addEventListener('click', () => handleOptionSelection(index, button));
-                optionsContainer.appendChild(button);
-            });
-        }
-
-        function handleOptionSelection(selectedIndex, clickedButton) {
-            if (hasAnsweredCurrent) return;
-            hasAnsweredCurrent = true;
-
-            const currentQ = quizDatabase[currentQuestionIndex];
-            const allOptionButtons = optionsContainer.getElementsByClassName('quiz-opt-btn');
-
-            if (selectedIndex === currentQ.a) {
-                clickedButton.classList.add('correct-flash');
-                userScore++;
-                if (scoreText) scoreText.innerText = `गुण: ${userScore}`;
-            } else {
-                clickedButton.classList.add('wrong-flash');
-                if (allOptionButtons[currentQ.a]) allOptionButtons[currentQ.a].classList.add('correct-flash');
-            }
-
-            const actionBtn = document.createElement('button');
-            actionBtn.className = 'quiz-next-btn';
-            if (currentQuestionIndex < quizDatabase.length - 1) {
-                actionBtn.innerText = 'पुढील प्रश्न →';
-                actionBtn.addEventListener('click', () => {
-                    currentQuestionIndex++;
-                    loadQuestion();
-                });
-            } else {
-                actionBtn.style.backgroundColor = '#22c55e';
-                actionBtn.innerText = 'चाचणी पूर्ण करा';
-                actionBtn.addEventListener('click', displayQuizSummary);
-            }
-            actionWrapper.appendChild(actionBtn);
-        }
-
-        function displayQuizSummary() {
-            questionBox.innerText = `चाचणी पूर्ण झाली! तुमचा एकूण निकाल: ${userScore}/५`;
-            optionsContainer.innerHTML = '';
-            actionWrapper.innerHTML = `<a href="#" id="retryQuizBtn" class="section-redirect-link" style="display:block; text-align:center;">→ पुन्हा प्रयत्न करा</a>`;
-            rootContext.querySelector('#retryQuizBtn').addEventListener('click', (e) => {
-                e.preventDefault();
-                setupQuizEngine(rootContext);
-            });
-        }
-
-        loadQuestion();
-    }
+// Fire Quiz Engine on load window
+document.addEventListener("DOMContentLoaded", () => {
+    initQuizModule();
 });

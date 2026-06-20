@@ -165,7 +165,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const item = dictionaryData.find(w => w.word.trim().toLowerCase() === wordName.trim().toLowerCase());
         if(!item) return;
 
+        // Word View Ad Format Layout: Search Bar -> Ad Slot -> Word and first definition
         let wordHTML = `
+            <div class="ad-placeholder banner-ad">जाहिरात जागा (Ad Slot)</div>
             <div class="word-entry">
                 <div class="entry-header">
                     <h2 class="headword">${item.word}</h2>
@@ -186,23 +188,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         wordHTML += `<div style="font-weight: bold; margin-bottom: 0.5rem; color: var(--primary-dark);">अर्थ आणि उदाहरणे:</div>`;
-        wordHTML += `<ol class="definitions-list">`;
+        
+        // Loop over the definitions to insert an ad slot between each one as a separator
         item.meanings.forEach((m, index) => {
+            if (index > 0) {
+                wordHTML += `</ol></div><div class="ad-placeholder banner-ad">जाहिरात जागा (Ad Slot)</div><div class="word-entry"><ol class="definitions-list" start="${index + 1}">`;
+            } else {
+                wordHTML += `<ol class="definitions-list">`;
+            }
+            
             wordHTML += `
                 <li>
                     <span class="definition-text">${m.definition}</span>
                     <div class="example-item">${m.example}</div>
                 </li>
             `;
-            if(index === 0 && item.meanings.length > 1) {
-                wordHTML += `</ol><div class="ad-placeholder">जाहिरात जागा</div><ol class="definitions-list" start="2">`;
-            }
         });
-        wordHTML += `</ol>`;
+        wordHTML += `</ol></div>`;
 
+        // Add separator ad slot before Vakyaprachar/Idioms section if it exists
         if (item.idioms && item.idioms.length > 0) {
             wordHTML += `
-                <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border-light);">
+                <div class="ad-placeholder banner-ad">जाहिरात जागा (Ad Slot)</div>
+                <div class="word-entry">
                     <strong style="color: var(--primary-dark); display: block; margin-bottom: 0.5rem;">वाक्प्रचार आणि म्हणी:</strong>
                     <ul style="margin: 0; padding-left: 1.2rem;">
                         ${item.idioms.map(idm => `
@@ -217,24 +225,27 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         }
 
-        if (item.etymology) {
-            wordHTML += `
-                <div style="margin-top: 1.5rem; padding: 0.8rem; background: #f1f5f9; border-radius: 4px; font-size: 0.95rem; color: #475569;">
-                    <strong>व्युत्पत्ती (शब्दाचा उगम):</strong> ${item.etymology}
-                </div>
-            `;
+        if (item.etymology || item.synonyms || item.antonyms) {
+            wordHTML += `<div class="word-entry" style="margin-top: 1.5rem;">`;
+            if (item.etymology) {
+                wordHTML += `
+                    <div style="margin-bottom: 1.2rem; padding: 0.8rem; background: #f1f5f9; border-radius: 4px; font-size: 0.95rem; color: #475569;">
+                        <strong>व्युत्पत्ती (शब्दाचा उगम):</strong> ${item.etymology}
+                    </div>
+                `;
+            }
+
+            if (item.synonyms || item.antonyms) {
+                wordHTML += `
+                    <div style="display: flex; gap: 1.5rem; font-size: 0.95rem; border-top: 1px dashed var(--border-light); padding-top: 0.8rem;">
+                        ${item.synonyms ? `<div><strong style="color: #16a34a;">समानार्थी:</strong> ${item.synonyms}</div>` : ''}
+                        ${item.antonyms ? `<div><strong style="color: #dc2626;">विरुद्धार्थी:</strong> ${item.antonyms}</div>` : ''}
+                    </div>
+                `;
+            }
+            wordHTML += `</div>`;
         }
 
-        if (item.synonyms || item.antonyms) {
-            wordHTML += `
-                <div style="margin-top: 1.2rem; display: flex; gap: 1.5rem; font-size: 0.95rem; border-top: 1px dashed var(--border-light); padding-top: 0.8rem;">
-                    ${item.synonyms ? `<div><strong style="color: #16a34a;">समानार्थी:</strong> ${item.synonyms}</div>` : ''}
-                    ${item.antonyms ? `<div><strong style="color: #dc2626;">विरुद्धार्थी:</strong> ${item.antonyms}</div>` : ''}
-                </div>
-            `;
-        }
-
-        wordHTML += `</div>`;
         showPage(wordHTML);
     }
 

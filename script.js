@@ -161,6 +161,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return wordStr.startsWith(letter);
         });
         
+        // Sort the matched list alphabetically in Marathi
+        matchedWords.sort((a, b) => a.word.localeCompare(b.word, 'mr'));
+        
         let letterPageHTML = `
             <div class="word-entry">
                 <h2 class="headword entry-letter-title">अक्षर सूची: "${letter}"</h2>

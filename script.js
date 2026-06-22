@@ -33,7 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
     fetch('dictionary.json')
         .then(res => res.json())
         .then(data => { 
-            dictionaryData = data; 
+            // Sort the incoming data array alphabetically using Marathi locale rules
+            dictionaryData = data.sort((a, b) => a.word.localeCompare(b.word, 'mr')); 
             initializeRoutingEvents(document); // Init first page
             setupQuizEngine(document); 
         })

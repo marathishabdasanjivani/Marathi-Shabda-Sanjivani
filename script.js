@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const navWotd = document.getElementById('navWotd');
 
     let dictionaryData = [];
-    // Keep track of the current viewed letter for accurate back-navigation targeting
     let currentActiveLetter = null;
 
     // Clone templates to keep homepage state cached safely in memory
@@ -41,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(err => console.error("डेटाबेस लोड करताना त्रुटी आली:", err));
 
     // --- Dynamic Routing Control System ---
-    function showPage(elementHTML, onRenderCallback = null, pageStateObj = null) {
+    function showPage(elementHTML, onRenderCallback = null) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         entryContainer.innerHTML = '';
         
@@ -54,17 +53,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (onRenderCallback) onRenderCallback();
         if (searchDropdown) searchDropdown.style.display = 'none';
         if (searchBar) searchBar.value = '';
-
-        // Safely push state info history sequence if custom object is attached
-        if (pageStateObj) {
-            history.pushState(pageStateObj, "");
-        }
     }
 
-    function loadHomepage(pushState = true) {
+    function loadHomepage() {
         currentActiveLetter = null;
         const homeNode = cachedHomepage.cloneNode(true);
-        showPage(homeNode, null, pushState ? { view: "home" } : null);
+        showPage(homeNode, null);
         initializeRoutingEvents(homeNode);
         setupQuizEngine(homeNode);
     }
@@ -72,9 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Monitor back actions universally using custom window state pop listener tags
     window.addEventListener('popstate', (event) => {
         if (!event.state || event.state.view === "home") {
-            loadHomepage(false);
+            loadHomepage();
         } else if (event.state.view === "alphabet-list") {
-            // Re-render the exact letter list instead of breaking back to home view loop
             renderLetterPage(event.state.letter, false);
         } else if (event.state.view === "word-detail") {
             loadWordDetailPage(event.state.word, false);
@@ -84,8 +77,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // Baseline historical stack state setup
     history.replaceState({ view: "home" }, "");
 
-    if (siteBrandGroup) siteBrandGroup.addEventListener('click', () => loadHomepage(true));
-    if (navHome) navHome.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); loadHomepage(true); });
+    if (siteBrandGroup) {
+        siteBrandGroup.addEventListener('click', () => {
+            loadHomepage();
+            history.pushState({ view: "home" }, "");
+        });
+    }
+    
+    if (navHome) {
+        navHome.addEventListener('click', (e) => { 
+            e.preventDefault(); 
+            toggleMenu(); 
+            loadHomepage(); 
+            history.pushState({ view: "home" }, "");
+        });
+    }
 
     // Handle specific standalone component paths
     if (navWotd) {
@@ -94,8 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleMenu();
             const node = cachedHomepage.cloneNode(true);
             const section = node.querySelector('#wordOfTheDaySection');
-            showPage(section, null, { view: "wotd-isolated" });
+            showPage(section, null);
             initializeRoutingEvents(entryContainer);
+            history.pushState({ view: "wotd-isolated" }, "");
         });
     }
 
@@ -105,7 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleMenu();
             const node = cachedHomepage.cloneNode(true);
             const section = node.querySelector('#quizSection');
-            showPage(section, () => { setupQuizEngine(entryContainer); }, { view: "quiz-isolated" });
+            showPage(section, () => { setupQuizEngine(entryContainer); });
+            history.pushState({ view: "quiz-isolated" }, "");
         });
     }
 
@@ -115,7 +123,8 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleMenu();
             const node = cachedHomepage.cloneNode(true);
             const section = node.querySelector('#alphabetSection');
-            showPage(section, () => { initializeRoutingEvents(entryContainer); }, { view: "alphabet-grid" });
+            showPage(section, () => { initializeRoutingEvents(entryContainer); });
+            history.pushState({ view: "alphabet-grid" }, "");
         });
     }
 
@@ -141,7 +150,8 @@ document.addEventListener('DOMContentLoaded', () => {
             viewAllWotdLink.addEventListener('click', (e) => {
                 e.preventDefault();
                 const node = cachedHomepage.cloneNode(true);
-                showPage(node.querySelector('#wordOfTheDaySection'), () => { initializeRoutingEvents(entryContainer); }, { view: "wotd-section-view" });
+                showPage(node.querySelector('#wordOfTheDaySection'), () => { initializeRoutingEvents(entryContainer); });
+                history.pushState({ view: "wotd-section-view" }, "");
             });
         }
     }
@@ -188,9 +198,14 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             entryContainer.querySelector('#backToGridBtn').addEventListener('click', (e) => {
                 e.preventDefault();
-                loadHomepage(true);
+                loadHomepage();
+                history.pushState({ view: "home" }, "");
             });
-        }, pushState ? { view: "alphabet-list", letter: letter } : null);
+        });
+
+        if (pushState) {
+            history.pushState({ view: "alphabet-list", letter: letter }, "");
+        }
     }
 
     // --- Page 2: Standalone Full Word Detail Page ---
@@ -279,7 +294,11 @@ document.addEventListener('DOMContentLoaded', () => {
             wordHTML += `</div>`;
         }
 
-        showPage(wordHTML, null, pushState ? { view: "word-detail", word: wordName } : null);
+        showPage(wordHTML, null);
+
+        if (pushState) {
+            history.pushState({ view: "word-detail", word: wordName }, "");
+        }
     }
 
     // --- Search Dropdown Engine Hook ---
@@ -342,7 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 a: 1 
             },
             { 
-                q: "३. खालीलपैकी कुठला शब्द 'सुरुवातीपासून शेवटपर्यंत सविस्तर' या अर्थासाठी वापरला जातो?\n\n“पोलिसांनी चोराला पकडल्यानंतर, त्याने गुन्ह्याची ________ माहिती त्यांनी दिली.”", 
+                q: "३. खालीलपैकी कुठला शब्द 'सुरुवातीपासून शेवटपर्यंत सविस्तर' या अर्थासाठी वापरला जातो?\n\n“पोलिसांनी चोराला पकडल्यानंतर, त्याने गुन्ह्याची ________ माहिती त्यांना दिली.”", 
                 o: ["(अ) अळणी", "(ब) आर्तहाक", "(क) इत्यंभूत", "(ड) ईषत"], 
                 a: 2 
             },

@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const navWotd = document.getElementById('navWotd');
 
     let dictionaryData = [];
+    // Keep track of the current viewed letter for accurate back-navigation targeting
+    let currentActiveLetter = null;
 
     // Clone templates to keep homepage state cached safely in memory
     const cachedHomepage = homepageDefault.cloneNode(true);
@@ -39,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch(err => console.error("डेटाबेस लोड करताना त्रुटी आली:", err));
 
     // --- Dynamic Routing Control System ---
-    function showPage(elementHTML, onRenderCallback = null, pushState = true) {
+    function showPage(elementHTML, onRenderCallback = null, pageStateObj = null) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         entryContainer.innerHTML = '';
         
@@ -53,41 +55,34 @@ document.addEventListener('DOMContentLoaded', () => {
         if (searchDropdown) searchDropdown.style.display = 'none';
         if (searchBar) searchBar.value = '';
 
-        // Handle history state insertion to fix browser back exit issue
-        if (pushState) {
-            history.pushState({ pageView: "subpage" }, "");
+        // Safely push state info history sequence if custom object is attached
+        if (pageStateObj) {
+            history.pushState(pageStateObj, "");
         }
     }
 
     function loadHomepage(pushState = true) {
+        currentActiveLetter = null;
         const homeNode = cachedHomepage.cloneNode(true);
-        // Set pushState to false if we are resetting layout via native back button event execution
-        showPage(homeNode, null, pushState);
+        showPage(homeNode, null, pushState ? { view: "home" } : null);
         initializeRoutingEvents(homeNode);
         setupQuizEngine(homeNode);
-
-        if (pushState) {
-            history.pushState({ pageView: "home" }, "");
-        }
     }
 
-    // Monitor back actions using browser state pop events instead of exiting the site
+    // Monitor back actions universally using custom window state pop listener tags
     window.addEventListener('popstate', (event) => {
-        if (event.state && event.state.pageView === "home") {
-            // Keep on home layout safely
-            const homeNode = cachedHomepage.cloneNode(true);
-            entryContainer.innerHTML = '';
-            entryContainer.appendChild(homeNode);
-            initializeRoutingEvents(homeNode);
-            setupQuizEngine(homeNode);
-        } else {
-            // Revert back safely from a word view straight into the cached main application loop
+        if (!event.state || event.state.view === "home") {
             loadHomepage(false);
+        } else if (event.state.view === "alphabet-list") {
+            // Re-render the exact letter list instead of breaking back to home view loop
+            renderLetterPage(event.state.letter, false);
+        } else if (event.state.view === "word-detail") {
+            loadWordDetailPage(event.state.word, false);
         }
     });
 
-    // Initialize tracking token baseline on standard application entry boot point
-    history.replaceState({ pageView: "home" }, "");
+    // Baseline historical stack state setup
+    history.replaceState({ view: "home" }, "");
 
     if (siteBrandGroup) siteBrandGroup.addEventListener('click', () => loadHomepage(true));
     if (navHome) navHome.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); loadHomepage(true); });
@@ -99,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleMenu();
             const node = cachedHomepage.cloneNode(true);
             const section = node.querySelector('#wordOfTheDaySection');
-            showPage(section);
+            showPage(section, null, { view: "wotd-isolated" });
             initializeRoutingEvents(entryContainer);
         });
     }
@@ -110,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleMenu();
             const node = cachedHomepage.cloneNode(true);
             const section = node.querySelector('#quizSection');
-            showPage(section, () => { setupQuizEngine(entryContainer); });
+            showPage(section, () => { setupQuizEngine(entryContainer); }, { view: "quiz-isolated" });
         });
     }
 
@@ -120,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
             toggleMenu();
             const node = cachedHomepage.cloneNode(true);
             const section = node.querySelector('#alphabetSection');
-            showPage(section, () => { initializeRoutingEvents(entryContainer); });
+            showPage(section, () => { initializeRoutingEvents(entryContainer); }, { view: "alphabet-grid" });
         });
     }
 
@@ -132,27 +127,29 @@ document.addEventListener('DOMContentLoaded', () => {
             box.style.cursor = 'pointer';
             box.addEventListener('click', () => {
                 const selectedLetter = box.innerText.trim();
-                renderLetterPage(selectedLetter);
+                renderLetterPage(selectedLetter, true);
             });
         });
 
         // WOTD text links
         const wotdLink = context.querySelector('#wotdLink');
         if(wotdLink) {
-            wotdLink.addEventListener('click', () => { loadWordDetailPage(wotdLink.innerText.trim()); });
+            wotdLink.addEventListener('click', () => { loadWordDetailPage(wotdLink.innerText.trim(), true); });
         }
         const viewAllWotdLink = context.querySelector('#viewAllWotdLink');
         if(viewAllWotdLink) {
             viewAllWotdLink.addEventListener('click', (e) => {
                 e.preventDefault();
                 const node = cachedHomepage.cloneNode(true);
-                showPage(node.querySelector('#wordOfTheDaySection'), () => { initializeRoutingEvents(entryContainer); });
+                showPage(node.querySelector('#wordOfTheDaySection'), () => { initializeRoutingEvents(entryContainer); }, { view: "wotd-section-view" });
             });
         }
     }
 
     // --- Page 1: Standalone Alphabet Letter Category Page ---
-    function renderLetterPage(letter) {
+    function renderLetterPage(letter, pushState = true) {
+        currentActiveLetter = letter;
+        
         // Matches only words that strictly start with the requested letter
         const matchedWords = dictionaryData.filter(item => {
             const wordStr = item.word.trim();
@@ -187,18 +184,17 @@ document.addEventListener('DOMContentLoaded', () => {
         showPage(letterPageHTML, () => {
             // Bind navigation click triggers to buttons
             entryContainer.querySelectorAll('.word-target-btn').forEach(btn => {
-                btn.addEventListener('click', () => { loadWordDetailPage(btn.getAttribute('data-word')); });
+                btn.addEventListener('click', () => { loadWordDetailPage(btn.getAttribute('data-word'), true); });
             });
             entryContainer.querySelector('#backToGridBtn').addEventListener('click', (e) => {
                 e.preventDefault();
-                const node = cachedHomepage.cloneNode(true);
-                showPage(node.querySelector('#alphabetSection'), () => { initializeRoutingEvents(entryContainer); });
+                loadHomepage(true);
             });
-        });
+        }, pushState ? { view: "alphabet-list", letter: letter } : null);
     }
 
     // --- Page 2: Standalone Full Word Detail Page ---
-    function loadWordDetailPage(wordName) {
+    function loadWordDetailPage(wordName, pushState = true) {
         const item = dictionaryData.find(w => w.word.trim().toLowerCase() === wordName.trim().toLowerCase());
         if(!item) return;
 
@@ -283,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
             wordHTML += `</div>`;
         }
 
-        showPage(wordHTML);
+        showPage(wordHTML, null, pushState ? { view: "word-detail", word: wordName } : null);
     }
 
     // --- Search Dropdown Engine Hook ---
@@ -320,7 +316,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             searchDropdown.querySelectorAll('.dropdown-row-item').forEach(row => {
                 row.addEventListener('click', () => {
-                    loadWordDetailPage(row.getAttribute('data-word'));
+                    loadWordDetailPage(row.getAttribute('data-word'), true);
                 });
             });
         });

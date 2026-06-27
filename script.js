@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         }
 
-        wordHTML += `<div style="font-weight: bold; margin-bottom: 0.5rem; color: var(--primary-dark);">अर्थ आणि उदाहरणे:</div>`;
+        wordHTML += `<div style="font-weight: bold; margin-bottom: 0.5rem; color: var(--primary-dark);">अर्थ आणि उदाहरण:</div>`;
         
         // Loop over the definitions to insert an ad slot between each one as a separator
         item.meanings.forEach((m, index) => {

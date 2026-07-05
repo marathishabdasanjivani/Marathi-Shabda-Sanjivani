@@ -258,7 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showPage(wordHTML, null);
 
         if (pushState) {
-            history.pushState({ view: "word-detail", word: item.word }, "", `?word=${encodeURIComponent(item.word)}`);
+history.pushState({ view: "word-detail", word: item.word }, "", `?word=${item.word}`);
         }
     }
 

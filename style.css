@@ -277,6 +277,23 @@ body {
     height: 20px;
 }
 
+.footer-links {
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+}
+
+.footer-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    margin: 0 0.5rem;
+    transition: color 0.2s ease;
+}
+
+.footer-links a:hover, .footer-links a:active {
+    color: var(--accent-gold);
+}
+
 .footer-credit {
     font-size: 0.8rem;
     color: var(--text-muted);

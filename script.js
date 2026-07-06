@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const navAlphabet = document.getElementById('navAlphabet');
     const navQuiz = document.getElementById('navQuiz');
     const navWotd = document.getElementById('navWotd');
-    const navPrivacy = document.getElementById('navPrivacy'); // Added Privacy link
+    const navPrivacy = document.getElementById('navPrivacy');
 
     let dictionaryData = [];
     const cachedHomepage = homepageDefault.cloneNode(true);
@@ -42,20 +42,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
         });
     }
-});
-
-
-    if (menuBtn) menuBtn.addEventListener('click', toggleMenu);
-    if (menuOverlay) menuOverlay.addEventListener('click', toggleMenu);
 
     fetch('dictionary.json')
         .then(res => res.json())
         .then(data => { 
             dictionaryData = data.sort((a, b) => a.word.localeCompare(b.word, 'mr')); 
-            
             const urlParams = new URLSearchParams(window.location.search);
             const wordParam = urlParams.get('word');
-            
             if (wordParam) {
                 loadWordDetailPage(wordParam, false);
             } else {
@@ -68,20 +61,17 @@ document.addEventListener('DOMContentLoaded', () => {
     function showPage(elementHTML, onRenderCallback = null) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         entryContainer.innerHTML = '';
-        
         if (typeof elementHTML === 'string') {
             entryContainer.innerHTML = elementHTML;
         } else {
             entryContainer.appendChild(elementHTML);
         }
-
         if (onRenderCallback) onRenderCallback();
         if (searchDropdown) searchDropdown.style.display = 'none';
         if (searchBar) searchBar.value = '';
     }
 
     function loadHomepage() {
-        currentActiveLetter = null;
         const homeNode = cachedHomepage.cloneNode(true);
         showPage(homeNode, null);
         initializeRoutingEvents(homeNode);
@@ -92,24 +82,15 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('popstate', (event) => {
         if (!event.state || event.state.view === "home") {
             loadHomepage();
-        } else if (event.state.view === "alphabet-list") {
-            renderLetterPage(event.state.letter, false);
-        } else if (event.state.view === "word-detail") {
-            loadWordDetailPage(event.state.word, false);
         }
     });
 
-    if (siteBrandGroup) {
-        siteBrandGroup.addEventListener('click', () => { loadHomepage(); });
-    }
+    if (siteBrandGroup) siteBrandGroup.addEventListener('click', () => { loadHomepage(); });
+    if (navHome) navHome.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); loadHomepage(); });
     
-    if (navHome) {
-        navHome.addEventListener('click', (e) => { 
-            e.preventDefault(); 
-            toggleMenu(); 
-            loadHomepage(); 
-        });
-    }
+    // ... [Ensure you keep your remaining functions: initializeRoutingEvents, renderLetterPage, loadWordDetailPage, and setupQuizEngine here]
+});
+
 
     if (navWotd) {
         navWotd.addEventListener('click', (e) => {

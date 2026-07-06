@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
         navPrivacy.addEventListener('click', (e) => {
             e.preventDefault();
             toggleMenu();
-            fetch('privacy_4.html')
+            fetch('privacy.html')
                 .then(response => response.text())
                 .then(data => {
                     const parser = new DOMParser();

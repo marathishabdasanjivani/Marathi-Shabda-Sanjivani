@@ -1,29 +1,29 @@
 <!DOCTYPE html>
 <html lang="mr">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- CookieYes Script -->
+    <script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/8163ab5cfeb10088fa6a4f72/script.js"></script>
+
+    <!-- Your Dynamic Gtag Script -->
     <script>
-    // 1. Detect the domain
-    const host = window.location.hostname;
-    
-    // 2. Set your IDs here
-    // G-B5VDJRLQKT is for .com, G-SGTHWQP85Q is for .in
-    const idForDotCom = 'G-B5VDJRLQKT'; 
-    const idForDotIn = 'G-SGTHWQP85Q'; 
-    
-    const measurementId = host.includes('.com') ? idForDotCom : idForDotIn;
-
-    // 3. Dynamically load the correct Gtag script
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
-    document.head.appendChild(script);
-
-    // 4. Initialize the tracker
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', measurementId);
-</script>
+        const host = window.location.hostname;
+        const idForDotCom = 'G-B5VDJRLQKT'; 
+        const idForDotIn = 'G-SGTHWQP85Q'; 
+        const measurementId = host.includes('.com') ? idForDotCom : idForDotIn;
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
+        document.head.appendChild(script);
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', measurementId);
+    </script>
+    ...
+</head>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

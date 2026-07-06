@@ -57,11 +57,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (navPrivacy) navPrivacy.addEventListener('click', loadPrivacyPolicy);
     if (footerPrivacy) footerPrivacy.addEventListener('click', loadPrivacyPolicy);
 
-    // Temporary placeholders so the other links don't break or jump the page
+    // Update the Terms of Use to load dynamically
     if (footerTerms) {
         footerTerms.addEventListener('click', (e) => {
             e.preventDefault();
-            alert('वापराच्या अटी (Terms of Use) लवकरच उपलब्ध होतील. (Coming Soon!)');
+            fetch('/terms.html')
+                .then(response => response.text())
+                .then(data => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(data, 'text/html');
+                    const termsContent = doc.querySelector('.main-layout').innerHTML;
+                    entryContainer.innerHTML = termsContent;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    history.pushState({ view: "terms" }, "");
+                })
+                .catch(err => console.error("Error loading Terms of Use:", err));
         });
     }
     if (footerAbout) {

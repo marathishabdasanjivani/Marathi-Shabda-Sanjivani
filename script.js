@@ -8,11 +8,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const menuOverlay = document.getElementById('menuOverlay');
     const siteBrandGroup = document.getElementById('siteBrandGroup');
 
+    // Navigation and Footer Elements
     const navHome = document.getElementById('navHome');
     const navAlphabet = document.getElementById('navAlphabet');
     const navQuiz = document.getElementById('navQuiz');
     const navWotd = document.getElementById('navWotd');
     const navPrivacy = document.getElementById('navPrivacy');
+    
+    const footerPrivacy = document.getElementById('footerPrivacy');
+    const footerTerms = document.getElementById('footerTerms');
+    const footerAbout = document.getElementById('footerAbout');
 
     let dictionaryData = [];
     const cachedHomepage = homepageDefault.cloneNode(true);
@@ -26,19 +31,43 @@ document.addEventListener('DOMContentLoaded', () => {
     if (menuBtn) menuBtn.addEventListener('click', toggleMenu);
     if (menuOverlay) menuOverlay.addEventListener('click', toggleMenu);
 
-    if (navPrivacy) {
-        navPrivacy.addEventListener('click', (e) => {
-            e.preventDefault();
+    // Reusable function to load the Privacy Policy
+    function loadPrivacyPolicy(e) {
+        e.preventDefault();
+        // Close menu if it's open
+        if (sideNav.classList.contains('open')) {
             toggleMenu();
-            fetch('privacy.html')
-                .then(response => response.text())
-                .then(data => {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(data, 'text/html');
-                    const privacyContent = doc.querySelector('.main-layout').innerHTML;
-                    entryContainer.innerHTML = privacyContent;
-                    history.pushState({ view: "privacy" }, "");
-                });
+        }
+        
+        // Fetching with a leading slash ensures Vercel finds it properly
+        fetch('/privacy.html')
+            .then(response => response.text())
+            .then(data => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(data, 'text/html');
+                const privacyContent = doc.querySelector('.main-layout').innerHTML;
+                entryContainer.innerHTML = privacyContent;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                history.pushState({ view: "privacy" }, "");
+            })
+            .catch(err => console.error("Error loading Privacy Policy:", err));
+    }
+
+    // Attach Privacy logic to both Menu and Footer links
+    if (navPrivacy) navPrivacy.addEventListener('click', loadPrivacyPolicy);
+    if (footerPrivacy) footerPrivacy.addEventListener('click', loadPrivacyPolicy);
+
+    // Temporary placeholders so the other links don't break or jump the page
+    if (footerTerms) {
+        footerTerms.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('वापराच्या अटी (Terms of Use) लवकरच उपलब्ध होतील. (Coming Soon!)');
+        });
+    }
+    if (footerAbout) {
+        footerAbout.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('आमच्याबद्दल (About Us) माहिती लवकरच उपलब्ध होईल. (Coming Soon!)');
         });
     }
 
@@ -75,7 +104,8 @@ document.addEventListener('DOMContentLoaded', () => {
         showPage(homeNode, null);
         initializeRoutingEvents(homeNode);
         setupQuizEngine(homeNode);
-        history.pushState({ view: "home" }, "", "index.html");
+        // FIXED: Changed index_9.html to index.html to stop the 404 error
+        history.pushState({ view: "home" }, "", "index.html"); 
     }
 
     window.addEventListener('popstate', (event) => {

@@ -32,7 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => { 
             dictionaryData = data.sort((a, b) => a.word.localeCompare(b.word, 'mr')); 
             
-            // Check if URL has a word parameter on load
             const urlParams = new URLSearchParams(window.location.search);
             const wordParam = urlParams.get('word');
             
@@ -192,7 +191,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if(!item) return;
 
         let wordHTML = `
-            <div class="ad-placeholder banner-ad">जाहिरात जागा (Ad Slot)</div>
             <div class="word-entry">
                 <div class="entry-header">
                     <h2 class="headword">${item.word}</h2>
@@ -215,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
         wordHTML += `<div style="font-weight: bold; margin-bottom: 0.5rem; color: var(--primary-dark);">अर्थ आणि उदाहरण:</div>`;
         item.meanings.forEach((m, index) => {
             if (index > 0) {
-                wordHTML += `</ol></div><div class="ad-placeholder banner-ad">जाहिरात जागा (Ad Slot)</div><div class="word-entry"><ol class="definitions-list" start="${index + 1}">`;
+                wordHTML += `</ol></div><div class="word-entry"><ol class="definitions-list" start="${index + 1}">`;
             } else {
                 wordHTML += `<ol class="definitions-list">`;
             }
@@ -225,7 +223,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (item.idioms && item.idioms.length > 0) {
             wordHTML += `
-                <div class="ad-placeholder banner-ad">जाहिरात जागा (Ad Slot)</div>
                 <div class="word-entry">
                     <strong style="color: var(--primary-dark); display: block; margin-bottom: 0.5rem;">वाक्प्रचार आणि म्हणी:</strong>
                     <ul style="margin: 0; padding-left: 1.2rem;">
@@ -258,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showPage(wordHTML, null);
 
         if (pushState) {
-history.pushState({ view: "word-detail", word: item.word }, "", `?word=${item.word}`);
+            history.pushState({ view: "word-detail", word: item.word }, "", `?word=${item.word}`);
         }
     }
 

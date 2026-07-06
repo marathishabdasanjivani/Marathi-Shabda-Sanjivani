@@ -5,7 +5,6 @@
     --text-primary: #1e293b;
     --text-muted: #64748b;
     --border-light: #e2e8f0;
-    --ad-bg: #f1f5f9;
 }
 
 * {
@@ -146,7 +145,7 @@ body {
     align-items: center;
     width: 100%;
     background-color: white;
-    border: 2.5px solid var(--accent-gold); /* Noticeable solid gold border all sides */
+    border: 2.5px solid var(--accent-gold);
     border-radius: 6px;
     overflow: hidden;
 }
@@ -154,7 +153,7 @@ body {
 .search-wrapper #searchBar {
     width: 100%;
     border: none;
-    padding: 0.9rem 3.5rem 0.9rem 1rem; /* Space on right avoids text overlap with icon */
+    padding: 0.9rem 3.5rem 0.9rem 1rem;
     font-size: 1.1rem;
     outline: none;
     color: var(--text-primary);
@@ -237,25 +236,6 @@ body {
     font-size: 1rem;
 }
 
-.ad-placeholder {
-    background-color: var(--ad-bg);
-    border: 1px dashed #cbd5e1;
-    color: var(--text-muted);
-    text-align: center;
-    font-size: 0.8rem;
-    padding: 1.5rem;
-    margin: 1.5rem 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.banner-ad {
-    height: 90px;
-}
-
 /* Modern Vector Social Buttons Formatting */
 .oxford-footer {
     text-align: center;
@@ -315,7 +295,7 @@ body {
 .section-redirect-link {
     display: inline-block;
     margin-top: 1rem;
-    color: #1e293b; /* Set directly to match premium ink */
+    color: #1e293b;
     text-decoration: none;
     font-weight: 600;
     font-size: 0.95rem;
@@ -386,7 +366,7 @@ body {
     font-weight: 600;
     margin-bottom: 1.2rem;
     color: var(--text-primary);
-    white-space: pre-line; /* Allows linebreaks inside strings to render smoothly */
+    white-space: pre-line;
 }
 
 .quiz-options-stack {

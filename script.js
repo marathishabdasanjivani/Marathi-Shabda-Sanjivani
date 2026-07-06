@@ -26,12 +26,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (menuBtn) menuBtn.addEventListener('click', toggleMenu);
     if (menuOverlay) menuOverlay.addEventListener('click', toggleMenu);
 
-    // Privacy Policy Fetch Logic
     if (navPrivacy) {
         navPrivacy.addEventListener('click', (e) => {
             e.preventDefault();
             toggleMenu();
-            fetch('privacy.html')
+            fetch('privacy_4.html')
                 .then(response => response.text())
                 .then(data => {
                     const parser = new DOMParser();
@@ -76,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showPage(homeNode, null);
         initializeRoutingEvents(homeNode);
         setupQuizEngine(homeNode);
-        history.pushState({ view: "home" }, "", "index.html");
+        history.pushState({ view: "home" }, "", "index_9.html");
     }
 
     window.addEventListener('popstate', (event) => {
@@ -87,10 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (siteBrandGroup) siteBrandGroup.addEventListener('click', () => { loadHomepage(); });
     if (navHome) navHome.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); loadHomepage(); });
-    
-    // ... [Ensure you keep your remaining functions: initializeRoutingEvents, renderLetterPage, loadWordDetailPage, and setupQuizEngine here]
-});
-
 
     if (navWotd) {
         navWotd.addEventListener('click', (e) => {
@@ -152,13 +147,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderLetterPage(letter, pushState = true) {
-        currentActiveLetter = letter;
         const matchedWords = dictionaryData.filter(item => {
             const wordStr = item.word.trim();
             if (letter === "अ" && wordStr.startsWith("अं")) return false;
             return wordStr.startsWith(letter);
         });
-        
         matchedWords.sort((a, b) => a.word.localeCompare(b.word, 'mr'));
         
         let letterPageHTML = `<div class="word-entry"><h2 class="headword entry-letter-title">अक्षर सूची: "${letter}"</h2>`;
@@ -183,9 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        if (pushState) {
-            history.pushState({ view: "alphabet-list", letter: letter }, "");
-        }
+        if (pushState) history.pushState({ view: "alphabet-list", letter: letter }, "");
     }
 
     function loadWordDetailPage(wordName, pushState = true) {
@@ -197,8 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="entry-header">
                     <h2 class="headword">${item.word}</h2>
                     <span class="pos">${item.partOfSpeech}</span>
-                </div>
-        `;
+                </div>`;
 
         if (item.grammarInfo) {
             wordHTML += `
@@ -208,17 +198,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${item.grammarInfo.forms ? `<li><strong>विविध रूपे:</strong> ${item.grammarInfo.forms}</li>` : ''}
                         ${item.grammarInfo.pronunciation ? `<li><strong>उच्चार:</strong> ${item.grammarInfo.pronunciation}</li>` : ''}
                     </ul>
-                </div>
-            `;
+                </div>`;
         }
 
         wordHTML += `<div style="font-weight: bold; margin-bottom: 0.5rem; color: var(--primary-dark);">अर्थ आणि उदाहरण:</div>`;
         item.meanings.forEach((m, index) => {
-            if (index > 0) {
-                wordHTML += `</ol></div><div class="word-entry"><ol class="definitions-list" start="${index + 1}">`;
-            } else {
-                wordHTML += `<ol class="definitions-list">`;
-            }
+            if (index > 0) wordHTML += `</ol></div><div class="word-entry"><ol class="definitions-list" start="${index + 1}">`;
+            else wordHTML += `<ol class="definitions-list">`;
             wordHTML += `<li><span class="definition-text">${m.definition}</span><div class="example-item">${m.example}</div></li>`;
         });
         wordHTML += `</ol></div>`;
@@ -233,11 +219,9 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <strong style="color: #000;">${idm.phrase}</strong>
                                 <span style="display:block; font-size: 0.95rem; color: #475569; margin: 0.2rem 0;">• अर्थ: ${idm.meaning}</span>
                                 <span style="display:block; font-size: 0.95rem; color: #64748b; font-style: italic;">• उदाहरण: ${idm.example}</span>
-                            </li>
-                        `).join('')}
+                            </li>`).join('')}
                     </ul>
-                </div>
-            `;
+                </div>`;
         }
 
         if (item.etymology || item.synonyms || item.antonyms) {
@@ -248,17 +232,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div style="display: flex; gap: 1.5rem; font-size: 0.95rem; border-top: 1px dashed var(--border-light); padding-top: 0.8rem;">
                         ${item.synonyms ? `<div><strong style="color: #16a34a;">समानार्थी:</strong> ${item.synonyms}</div>` : ''}
                         ${item.antonyms ? `<div><strong style="color: #dc2626;">विरुद्धार्थी:</strong> ${item.antonyms}</div>` : ''}
-                    </div>
-                `;
+                    </div>`;
             }
             wordHTML += `</div>`;
         }
 
         showPage(wordHTML, null);
-
-        if (pushState) {
-            history.pushState({ view: "word-detail", word: item.word }, "", `?word=${item.word}`);
-        }
+        if (pushState) history.pushState({ view: "word-detail", word: item.word }, "", `?word=${item.word}`);
     }
 
     if (searchBar && searchDropdown) {
@@ -280,8 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 searchDropdown.innerHTML = matches.map(item => `
                     <div class="dropdown-row-item" data-word="${item.word}">
                         ${item.word} <span style="font-size:0.8rem; font-weight:normal; color:#64748b; margin-left:0.5rem;">(${item.partOfSpeech})</span>
-                    </div>
-                `).join('');
+                    </div>`).join('');
             }
             searchDropdown.className = 'search-dropdown-list';
             searchDropdown.style.display = 'block';

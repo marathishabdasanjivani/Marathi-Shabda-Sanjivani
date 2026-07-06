@@ -12,10 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const navAlphabet = document.getElementById('navAlphabet');
     const navQuiz = document.getElementById('navQuiz');
     const navWotd = document.getElementById('navWotd');
+    const navPrivacy = document.getElementById('navPrivacy'); // Added Privacy link
 
     let dictionaryData = [];
-    let currentActiveLetter = null;
-
     const cachedHomepage = homepageDefault.cloneNode(true);
 
     function toggleMenu() {
@@ -23,6 +22,28 @@ document.addEventListener('DOMContentLoaded', () => {
         sideNav.classList.toggle('open');
         menuOverlay.classList.toggle('open');
     }
+
+    if (menuBtn) menuBtn.addEventListener('click', toggleMenu);
+    if (menuOverlay) menuOverlay.addEventListener('click', toggleMenu);
+
+    // Privacy Policy Fetch Logic
+    if (navPrivacy) {
+        navPrivacy.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleMenu();
+            fetch('privacy.html')
+                .then(response => response.text())
+                .then(data => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(data, 'text/html');
+                    const privacyContent = doc.querySelector('.main-layout').innerHTML;
+                    entryContainer.innerHTML = privacyContent;
+                    history.pushState({ view: "privacy" }, "");
+                });
+        });
+    }
+});
+
 
     if (menuBtn) menuBtn.addEventListener('click', toggleMenu);
     if (menuOverlay) menuOverlay.addEventListener('click', toggleMenu);

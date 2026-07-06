@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (navPrivacy) navPrivacy.addEventListener('click', loadPrivacyPolicy);
     if (footerPrivacy) footerPrivacy.addEventListener('click', loadPrivacyPolicy);
 
-    // Update the Terms of Use to load dynamically
+    // Update the Terms and Conditions to load dynamically
     if (footerTerms) {
         footerTerms.addEventListener('click', (e) => {
             e.preventDefault();
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                     history.pushState({ view: "terms" }, "");
                 })
-                .catch(err => console.error("Error loading Terms of Use:", err));
+                .catch(err => console.error("Error loading Terms and Conditions:", err));
         });
     }
     if (footerAbout) {

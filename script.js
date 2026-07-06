@@ -57,7 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (navPrivacy) navPrivacy.addEventListener('click', loadPrivacyPolicy);
     if (footerPrivacy) footerPrivacy.addEventListener('click', loadPrivacyPolicy);
 
-    // Update the Terms and Conditions to load dynamically
     if (footerTerms) {
         footerTerms.addEventListener('click', (e) => {
             e.preventDefault();
@@ -74,10 +73,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 .catch(err => console.error("Error loading Terms and Conditions:", err));
         });
     }
+
     if (footerAbout) {
         footerAbout.addEventListener('click', (e) => {
             e.preventDefault();
-            alert('आमच्याबद्दल (About Us) माहिती लवकरच उपलब्ध होईल. (Coming Soon!)');
+            fetch('/about.html')
+                .then(response => response.text())
+                .then(data => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(data, 'text/html');
+                    const aboutContent = doc.querySelector('.main-layout').innerHTML;
+                    entryContainer.innerHTML = aboutContent;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    history.pushState({ view: "about" }, "");
+                })
+                .catch(err => console.error("Error loading About Us:", err));
         });
     }
 

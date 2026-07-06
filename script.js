@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showPage(homeNode, null);
         initializeRoutingEvents(homeNode);
         setupQuizEngine(homeNode);
-        history.pushState({ view: "home" }, "", "index_9.html");
+        history.pushState({ view: "home" }, "", "index.html");
     }
 
     window.addEventListener('popstate', (event) => {

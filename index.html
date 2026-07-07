@@ -3,32 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- CookieYes Script -->
-    <script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/8163ab5cfeb10088fa6a4f72/script.js"></script>
+    <title>मराठी शब्द संजीवनी - प्रगत डिजिटल शब्दकोश</title>
+    <link rel="stylesheet" href="style.css">
 
-    <!-- Your Dynamic Gtag Script -->
+    <!-- Unified Tracking and Consent Script -->
     <script>
-        const host = window.location.hostname;
-        const idForDotCom = 'G-B5VDJRLQKT'; 
-        const idForDotIn = 'G-SGTHWQP85Q'; 
-        const measurementId = host.includes('.com') ? idForDotCom : idForDotIn;
-        const script = document.createElement('script');
-        script.async = true;
-        script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
-        document.head.appendChild(script);
+        // 1. Initialize dataLayer
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
+
+        // 2. Set Default Consent to "denied" (Legal Compliance)
+        gtag('consent', 'default', {
+            'ad_storage': 'denied',
+            'ad_user_data': 'denied',
+            'ad_personalization': 'denied',
+            'analytics_storage': 'denied'
+        });
+
+        const host = window.location.hostname;
+
+        // 3. Dynamic Banner Loading (CookieYes for .com, Cookiebot for .in)
+        if (host.includes('.com')) {
+            const cyScript = document.createElement('script');
+            cyScript.id = "cookieyes";
+            cyScript.src = "https://cdn-cookieyes.com/client_data/8163ab5cfeb10088fa6a4f72/script.js";
+            document.head.appendChild(cyScript);
+        } else {
+            const cbScript = document.createElement('script');
+            cbScript.id = "Cookiebot";
+            cbScript.src = "https://consent.cookiebot.com/uc.js";
+            cbScript.setAttribute('data-cbid', '16f22b15-d4d7-4c0a-ad7d-a7b9e3a80b59');
+            cbScript.setAttribute('data-blockingmode', 'auto');
+            cbScript.type = "text/javascript";
+            document.head.appendChild(cbScript);
+        }
+
+        // 4. Dynamic Gtag Configuration
+        const measurementId = host.includes('.com') ? 'G-B5VDJRLQKT' : 'G-SGTHWQP85Q';
+        const gTagScript = document.createElement('script');
+        gTagScript.async = true;
+        gTagScript.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
+        document.head.appendChild(gTagScript);
+        
         gtag('config', measurementId);
     </script>
-    ...
-</head>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>मराठी शब्द संजीवनी - प्रगत डिजिटल शब्दकोश</title>
-    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 

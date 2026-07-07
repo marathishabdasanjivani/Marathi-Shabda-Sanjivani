@@ -23,21 +23,20 @@
 
         const host = window.location.hostname;
 
-        // 3. Dynamic Banner Loading (CookieYes for .com, Cookiebot for .in)
-        if (host.includes('.com')) {
-            const cyScript = document.createElement('script');
-            cyScript.id = "cookieyes";
-            cyScript.src = "https://cdn-cookieyes.com/client_data/8163ab5cfeb10088fa6a4f72/script.js";
-            document.head.appendChild(cyScript);
-        } else {
-            const cbScript = document.createElement('script');
-            cbScript.id = "Cookiebot";
-            cbScript.src = "https://consent.cookiebot.com/uc.js";
-            cbScript.setAttribute('data-cbid', '16f22b15-d4d7-4c0a-ad7d-a7b9e3a80b59');
-            cbScript.setAttribute('data-blockingmode', 'auto');
-            cbScript.type = "text/javascript";
-            document.head.appendChild(cbScript);
-        }
+        // 3. Dynamic CookieYes Banner Loading
+        const cookieYesScript = document.createElement('script');
+        cookieYesScript.id = "cookieyes";
+        cookieYesScript.type = "text/javascript";
+        
+        // Define your IDs here
+        const comID = "8163ab5cfeb10088fa6a4f72"; 
+        const inID = "8f009cce8a1f82400d6bf60ec172eb58"; 
+        
+        // Assign the correct script based on the domain
+        cookieYesScript.src = host.includes('.com') 
+            ? `https://cdn-cookieyes.com/client_data/${comID}/script.js` 
+            : `https://cdn-cookieyes.com/client_data/${inID}/script.js`;
+        document.head.appendChild(cookieYesScript);
 
         // 4. Dynamic Gtag Configuration
         const measurementId = host.includes('.com') ? 'G-B5VDJRLQKT' : 'G-SGTHWQP85Q';

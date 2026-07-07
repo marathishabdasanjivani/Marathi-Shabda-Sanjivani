@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const navQuiz = document.getElementById('navQuiz');
     const navWotd = document.getElementById('navWotd');
     const navPrivacy = document.getElementById('navPrivacy');
+    const navTerms = document.getElementById('navTerms');
+    const navAbout = document.getElementById('navAbout');
     
     const footerPrivacy = document.getElementById('footerPrivacy');
     const footerTerms = document.getElementById('footerTerms');
@@ -34,12 +36,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Reusable function to load the Privacy Policy
     function loadPrivacyPolicy(e) {
         e.preventDefault();
-        // Close menu if it's open
         if (sideNav.classList.contains('open')) {
             toggleMenu();
         }
-        
-        // Fetching with a leading slash ensures Vercel finds it properly
         fetch('/privacy.html')
             .then(response => response.text())
             .then(data => {
@@ -53,8 +52,46 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(err => console.error("Error loading Privacy Policy:", err));
     }
 
-    // Attach Privacy logic to both Menu and Footer links
+    // Attach Privacy, Terms, and About logic to Menu links
     if (navPrivacy) navPrivacy.addEventListener('click', loadPrivacyPolicy);
+    
+    if (navTerms) {
+        navTerms.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleMenu();
+            fetch('/terms.html')
+                .then(response => response.text())
+                .then(data => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(data, 'text/html');
+                    const content = doc.querySelector('.main-layout').innerHTML;
+                    entryContainer.innerHTML = content;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    history.pushState({ view: "terms" }, "");
+                })
+                .catch(err => console.error("Error loading Terms:", err));
+        });
+    }
+
+    if (navAbout) {
+        navAbout.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleMenu();
+            fetch('/about.html')
+                .then(response => response.text())
+                .then(data => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(data, 'text/html');
+                    const content = doc.querySelector('.main-layout').innerHTML;
+                    entryContainer.innerHTML = content;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    history.pushState({ view: "about" }, "");
+                })
+                .catch(err => console.error("Error loading About:", err));
+        });
+    }
+
+    // Attach Footer links
     if (footerPrivacy) footerPrivacy.addEventListener('click', loadPrivacyPolicy);
 
     if (footerTerms) {
@@ -124,7 +161,6 @@ document.addEventListener('DOMContentLoaded', () => {
         showPage(homeNode, null);
         initializeRoutingEvents(homeNode);
         setupQuizEngine(homeNode);
-        // FIXED: Changed index_9.html to index.html to stop the 404 error
         history.pushState({ view: "home" }, "", "index.html"); 
     }
 

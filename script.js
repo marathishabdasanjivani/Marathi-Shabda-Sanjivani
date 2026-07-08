@@ -30,12 +30,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (menuBtn) menuBtn.addEventListener('click', toggleMenu);
     if (menuOverlay) menuOverlay.addEventListener('click', toggleMenu);
 
-    // Helper to ensure Quiz Title exists with correct styling
+    // Helper to ensure Quiz Title exists with correct .section-title-badge styling
     function ensureQuizTitle(container) {
         const quizSection = container.querySelector('#quizSection');
-        if (quizSection && !quizSection.querySelector('.section-title')) {
-            const title = document.createElement('h2');
-            title.className = 'section-title'; // Using standard title class for uniformity
+        // Check if the title badge already exists to prevent duplication
+        if (quizSection && !quizSection.querySelector('.section-title-badge')) {
+            const title = document.createElement('div');
+            title.className = 'section-title-badge'; // Using existing CSS class for consistent Gold/Upper styling
             title.innerText = 'शब्दसंग्रह चाचणी';
             quizSection.prepend(title);
         }
@@ -80,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadHomepage() {
         const homeNode = cachedHomepage.cloneNode(true);
         
-        // Add Quiz Title on Homepage
+        // Add Quiz Title on Homepage with consistent style
         ensureQuizTitle(homeNode);
 
         // WOTD: Daily random word fetch logic
@@ -252,7 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault(); 
         toggleMenu(); 
         const node = cachedHomepage.cloneNode(true); 
-        ensureQuizTitle(node); // Add title if navigating directly
+        ensureQuizTitle(node); // Add title with correct style
         showPage(node.querySelector('#quizSection'), () => setupQuizEngine(entryContainer)); 
     });
     

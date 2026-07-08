@@ -33,242 +33,138 @@ document.addEventListener('DOMContentLoaded', () => {
     if (menuBtn) menuBtn.addEventListener('click', toggleMenu);
     if (menuOverlay) menuOverlay.addEventListener('click', toggleMenu);
 
-    // Reusable function to load the Privacy Policy
     function loadPrivacyPolicy(e) {
         e.preventDefault();
-        if (sideNav.classList.contains('open')) {
-            toggleMenu();
-        }
-        fetch('/privacy.html')
-            .then(response => response.text())
-            .then(data => {
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(data, 'text/html');
-                const privacyContent = doc.querySelector('.main-layout').innerHTML;
-                entryContainer.innerHTML = privacyContent;
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                history.pushState({ view: "privacy" }, "");
-            })
-            .catch(err => console.error("Error loading Privacy Policy:", err));
+        if (sideNav.classList.contains('open')) toggleMenu();
+        fetch('/privacy.html').then(r => r.text()).then(data => {
+            const doc = new DOMParser().parseFromString(data, 'text/html');
+            entryContainer.innerHTML = doc.querySelector('.main-layout').innerHTML;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            history.pushState({ view: "privacy" }, "");
+        });
     }
 
-    // Attach Privacy, Terms, and About logic to Menu links
+    // Navigation Attachments
     if (navPrivacy) navPrivacy.addEventListener('click', loadPrivacyPolicy);
-    
-    if (navTerms) {
-        navTerms.addEventListener('click', (e) => {
-            e.preventDefault();
-            toggleMenu();
-            fetch('/terms.html')
-                .then(response => response.text())
-                .then(data => {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(data, 'text/html');
-                    const content = doc.querySelector('.main-layout').innerHTML;
-                    entryContainer.innerHTML = content;
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                    history.pushState({ view: "terms" }, "");
-                })
-                .catch(err => console.error("Error loading Terms:", err));
-        });
-    }
-
-    if (navAbout) {
-        navAbout.addEventListener('click', (e) => {
-            e.preventDefault();
-            toggleMenu();
-            fetch('/about.html')
-                .then(response => response.text())
-                .then(data => {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(data, 'text/html');
-                    const content = doc.querySelector('.main-layout').innerHTML;
-                    entryContainer.innerHTML = content;
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                    history.pushState({ view: "about" }, "");
-                })
-                .catch(err => console.error("Error loading About:", err));
-        });
-    }
-
-    // Attach Footer links
+    if (navTerms) navTerms.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); fetch('/terms.html').then(r => r.text()).then(d => { entryContainer.innerHTML = new DOMParser().parseFromString(d, 'text/html').querySelector('.main-layout').innerHTML; }); });
+    if (navAbout) navAbout.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); fetch('/about.html').then(r => r.text()).then(d => { entryContainer.innerHTML = new DOMParser().parseFromString(d, 'text/html').querySelector('.main-layout').innerHTML; }); });
     if (footerPrivacy) footerPrivacy.addEventListener('click', loadPrivacyPolicy);
-
-    if (footerTerms) {
-        footerTerms.addEventListener('click', (e) => {
-            e.preventDefault();
-            fetch('/terms.html')
-                .then(response => response.text())
-                .then(data => {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(data, 'text/html');
-                    const termsContent = doc.querySelector('.main-layout').innerHTML;
-                    entryContainer.innerHTML = termsContent;
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                    history.pushState({ view: "terms" }, "");
-                })
-                .catch(err => console.error("Error loading Terms and Conditions:", err));
-        });
-    }
-
-    if (footerAbout) {
-        footerAbout.addEventListener('click', (e) => {
-            e.preventDefault();
-            fetch('/about.html')
-                .then(response => response.text())
-                .then(data => {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(data, 'text/html');
-                    const aboutContent = doc.querySelector('.main-layout').innerHTML;
-                    entryContainer.innerHTML = aboutContent;
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                    history.pushState({ view: "about" }, "");
-                })
-                .catch(err => console.error("Error loading About Us:", err));
-        });
-    }
+    if (footerTerms) footerTerms.addEventListener('click', (e) => { e.preventDefault(); fetch('/terms.html').then(r => r.text()).then(d => { entryContainer.innerHTML = new DOMParser().parseFromString(d, 'text/html').querySelector('.main-layout').innerHTML; }); });
+    if (footerAbout) footerAbout.addEventListener('click', (e) => { e.preventDefault(); fetch('/about.html').then(r => r.text()).then(d => { entryContainer.innerHTML = new DOMParser().parseFromString(d, 'text/html').querySelector('.main-layout').innerHTML; }); });
 
     fetch('dictionary.json')
         .then(res => res.json())
         .then(data => { 
             dictionaryData = data.sort((a, b) => a.word.localeCompare(b.word, 'mr')); 
             const urlParams = new URLSearchParams(window.location.search);
-            const wordParam = urlParams.get('word');
-            if (wordParam) {
-                loadWordDetailPage(wordParam, false);
-            } else {
-                initializeRoutingEvents(document);
-                setupQuizEngine(document); 
-            }
-        })
-        .catch(err => console.error("डेटाबेस लोड करताना त्रुटी आली:", err));
+            if (urlParams.get('word')) loadWordDetailPage(urlParams.get('word'), false);
+            else loadHomepage();
+        });
 
     function showPage(elementHTML, onRenderCallback = null) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         entryContainer.innerHTML = '';
-        if (typeof elementHTML === 'string') {
-            entryContainer.innerHTML = elementHTML;
-        } else {
-            entryContainer.appendChild(elementHTML);
-        }
+        if (typeof elementHTML === 'string') entryContainer.innerHTML = elementHTML;
+        else entryContainer.appendChild(elementHTML);
         if (onRenderCallback) onRenderCallback();
-        if (searchDropdown) searchDropdown.style.display = 'none';
-        if (searchBar) searchBar.value = '';
     }
 
     function loadHomepage() {
         const homeNode = cachedHomepage.cloneNode(true);
+        
+        // WOTD: Daily random word fetch logic
+        if (dictionaryData.length > 0) {
+            const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+            const dailyWord = dictionaryData[dayOfYear % dictionaryData.length];
+            const link = homeNode.querySelector('#wotdLink');
+            const def = homeNode.querySelector('#wotdDefinition');
+            if (link) link.innerText = dailyWord.word;
+            if (def) def.innerText = dailyWord.meanings[0].definition; 
+        }
+        
         showPage(homeNode, null);
         initializeRoutingEvents(homeNode);
         setupQuizEngine(homeNode);
         history.pushState({ view: "home" }, "", "index.html"); 
     }
 
-    window.addEventListener('popstate', (event) => {
-        if (!event.state || event.state.view === "home") {
-            loadHomepage();
-        }
-    });
+    // Quiz Engine: Fetches from quiz.json
+    function setupQuizEngine(rootContext) {
+        const questionBox = rootContext.querySelector('#quizQuestionBox');
+        if(!questionBox) return;
 
-    if (siteBrandGroup) siteBrandGroup.addEventListener('click', () => { loadHomepage(); });
-    if (navHome) navHome.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); loadHomepage(); });
+        fetch('quiz.json')
+            .then(res => res.json())
+            .then(quizDatabase => {
+                let currentQuestionIndex = 0;
+                let userScore = 0;
+                let hasAnsweredCurrent = false;
 
-    if (navWotd) {
-        navWotd.addEventListener('click', (e) => {
-            e.preventDefault();
-            toggleMenu();
-            const node = cachedHomepage.cloneNode(true);
-            const section = node.querySelector('#wordOfTheDaySection');
-            showPage(section, null);
-            initializeRoutingEvents(entryContainer);
-            history.pushState({ view: "wotd-isolated" }, "");
-        });
-    }
+                const progressText = rootContext.querySelector('#quizProgress');
+                const scoreText = rootContext.querySelector('#quizScore');
+                const optionsContainer = rootContext.querySelector('#quizOptionsContainer');
+                const actionWrapper = rootContext.querySelector('#quizActionWrapper');
 
-    if (navQuiz) {
-        navQuiz.addEventListener('click', (e) => {
-            e.preventDefault();
-            toggleMenu();
-            const node = cachedHomepage.cloneNode(true);
-            const section = node.querySelector('#quizSection');
-            showPage(section, () => { setupQuizEngine(entryContainer); });
-            history.pushState({ view: "quiz-isolated" }, "");
-        });
-    }
-
-    if (navAlphabet) {
-        navAlphabet.addEventListener('click', (e) => {
-            e.preventDefault();
-            toggleMenu();
-            const node = cachedHomepage.cloneNode(true);
-            const section = node.querySelector('#alphabetSection');
-            showPage(section, () => { initializeRoutingEvents(entryContainer); });
-            history.pushState({ view: "alphabet-grid" }, "");
-        });
+                function loadQuestion() {
+                    hasAnsweredCurrent = false;
+                    actionWrapper.innerHTML = '';
+                    optionsContainer.innerHTML = '';
+                    let currentQ = quizDatabase[currentQuestionIndex];
+                    if (progressText) progressText.innerText = `प्रश्न ${currentQuestionIndex + 1}/५`;
+                    questionBox.innerText = currentQ.q;
+                    currentQ.o.forEach((option, index) => {
+                        const button = document.createElement('button');
+                        button.className = 'quiz-opt-btn';
+                        button.innerText = option;
+                        button.addEventListener('click', () => {
+                            if (hasAnsweredCurrent) return;
+                            hasAnsweredCurrent = true;
+                            if (index === currentQ.a) {
+                                button.classList.add('correct-flash');
+                                userScore++;
+                                if (scoreText) scoreText.innerText = `गुण: ${userScore}`;
+                            } else {
+                                button.classList.add('wrong-flash');
+                                optionsContainer.getElementsByClassName('quiz-opt-btn')[currentQ.a].classList.add('correct-flash');
+                            }
+                            const actionBtn = document.createElement('button');
+                            actionBtn.className = 'quiz-next-btn';
+                            if (currentQuestionIndex < quizDatabase.length - 1) {
+                                actionBtn.innerText = 'पुढील प्रश्न →';
+                                actionBtn.addEventListener('click', () => { currentQuestionIndex++; loadQuestion(); });
+                            } else {
+                                actionBtn.style.backgroundColor = '#22c55e';
+                                actionBtn.innerText = 'चाचणी पूर्ण करा';
+                                actionBtn.addEventListener('click', () => {
+                                    questionBox.innerText = `चाचणी पूर्ण झाली! तुमचा एकूण निकाल: ${userScore}/५`;
+                                    optionsContainer.innerHTML = '';
+                                    actionWrapper.innerHTML = `<a href="#" class="section-redirect-link">→ पुन्हा प्रयत्न करा</a>`;
+                                    actionWrapper.querySelector('a').addEventListener('click', (e) => { e.preventDefault(); setupQuizEngine(rootContext); });
+                                });
+                            }
+                            actionWrapper.appendChild(actionBtn);
+                        });
+                        optionsContainer.appendChild(button);
+                    });
+                }
+                loadQuestion();
+            });
     }
 
     function initializeRoutingEvents(context) {
-        const letterBoxes = context.querySelectorAll('.alphabet-container span');
-        letterBoxes.forEach(box => {
+        context.querySelectorAll('.alphabet-container span').forEach(box => {
             box.style.cursor = 'pointer';
-            box.addEventListener('click', () => {
-                const selectedLetter = box.innerText.trim();
-                renderLetterPage(selectedLetter, true);
-            });
+            box.addEventListener('click', () => renderLetterPage(box.innerText.trim(), true));
         });
-
         const wotdLink = context.querySelector('#wotdLink');
-        if(wotdLink) {
-            wotdLink.addEventListener('click', () => { loadWordDetailPage(wotdLink.innerText.trim(), true); });
-        }
-        const viewAllWotdLink = context.querySelector('#viewAllWotdLink');
-        if(viewAllWotdLink) {
-            viewAllWotdLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                const node = cachedHomepage.cloneNode(true);
-                showPage(node.querySelector('#wordOfTheDaySection'), () => { initializeRoutingEvents(entryContainer); });
-                history.pushState({ view: "wotd-section-view" }, "");
-            });
-        }
-    }
-
-    function renderLetterPage(letter, pushState = true) {
-        const matchedWords = dictionaryData.filter(item => {
-            const wordStr = item.word.trim();
-            if (letter === "अ" && wordStr.startsWith("अं")) return false;
-            return wordStr.startsWith(letter);
-        });
-        matchedWords.sort((a, b) => a.word.localeCompare(b.word, 'mr'));
-        
-        let letterPageHTML = `<div class="word-entry"><h2 class="headword entry-letter-title">अक्षर सूची: "${letter}"</h2>`;
-        if (matchedWords.length === 0) {
-            letterPageHTML += `<p style="color: #64748b; margin-top: 1.5rem;">या अक्षराचे शब्द अजून उपलब्ध नाहीत.</p>`;
-        } else {
-            letterPageHTML += `<div class="letter-words-list-stack">`;
-            matchedWords.forEach(w => {
-                letterPageHTML += `<button class="word-target-btn letter-word-row-item" data-word="${w.word}">${w.word}</button>`;
-            });
-            letterPageHTML += `</div>`;
-        }
-        letterPageHTML += `<a href="#" id="backToGridBtn" class="section-redirect-link" style="display: inline-block; margin-top: 2rem;">← मुख्य सूचीकडे परत जा</a></div>`;
-
-        showPage(letterPageHTML, () => {
-            entryContainer.querySelectorAll('.word-target-btn').forEach(btn => {
-                btn.addEventListener('click', () => { loadWordDetailPage(btn.getAttribute('data-word'), true); });
-            });
-            entryContainer.querySelector('#backToGridBtn').addEventListener('click', (e) => {
-                e.preventDefault();
-                loadHomepage();
-            });
-        });
-
-        if (pushState) history.pushState({ view: "alphabet-list", letter: letter }, "");
+        if(wotdLink) wotdLink.addEventListener('click', () => loadWordDetailPage(wotdLink.innerText.trim(), true));
     }
 
     function loadWordDetailPage(wordName, pushState = true) {
         const item = dictionaryData.find(w => w.word.trim().toLowerCase() === wordName.trim().toLowerCase());
         if(!item) return;
 
+        // Restored detailed HTML structure for correct spacing
         let wordHTML = `
             <div class="word-entry">
                 <div class="entry-header">
@@ -327,112 +223,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pushState) history.pushState({ view: "word-detail", word: item.word }, "", `?word=${item.word}`);
     }
 
-    if (searchBar && searchDropdown) {
-        searchBar.addEventListener('input', (e) => {
-            const inputVal = e.target.value.trim().toLowerCase();
-            if (inputVal.length === 0) {
-                searchDropdown.innerHTML = '';
-                searchDropdown.style.display = 'none';
-                return;
-            }
-            const matches = dictionaryData.filter(item => {
-                const wordLow = item.word.toLowerCase();
-                if (inputVal === "अ" && wordLow.startsWith("अं")) return false;
-                return wordLow.startsWith(inputVal);
-            });
-            if (matches.length === 0) {
-                searchDropdown.innerHTML = `<div style="padding: 0.8rem; color: #64748b; font-size: 0.95rem; text-align: center;">शब्द सापडले नाहीत.</div>`;
-            } else {
-                searchDropdown.innerHTML = matches.map(item => `
-                    <div class="dropdown-row-item" data-word="${item.word}">
-                        ${item.word} <span style="font-size:0.8rem; font-weight:normal; color:#64748b; margin-left:0.5rem;">(${item.partOfSpeech})</span>
-                    </div>`).join('');
-            }
-            searchDropdown.className = 'search-dropdown-list';
-            searchDropdown.style.display = 'block';
-            searchDropdown.querySelectorAll('.dropdown-row-item').forEach(row => {
-                row.addEventListener('click', () => { loadWordDetailPage(row.getAttribute('data-word'), true); });
-            });
-        });
-        document.addEventListener('click', (e) => {
-            if (!searchBar.contains(e.target) && !searchDropdown.contains(e.target)) {
-                searchDropdown.style.display = 'none';
-            }
+    function renderLetterPage(letter, pushState = true) {
+        const matched = dictionaryData.filter(i => i.word.startsWith(letter) && !(letter === "अ" && i.word.startsWith("अं")));
+        let html = `<div class="word-entry"><h2 class="headword">अक्षर: "${letter}"</h2><div class="letter-words-list-stack">`;
+        matched.forEach(w => html += `<button class="word-target-btn letter-word-row-item" data-word="${w.word}">${w.word}</button>`);
+        html += `</div><a href="#" id="backToGridBtn" class="section-redirect-link">← परत जा</a></div>`;
+        showPage(html, () => {
+            entryContainer.querySelectorAll('.word-target-btn').forEach(b => b.addEventListener('click', () => loadWordDetailPage(b.getAttribute('data-word'))));
+            entryContainer.querySelector('#backToGridBtn').addEventListener('click', (e) => { e.preventDefault(); loadHomepage(); });
         });
     }
 
-    function setupQuizEngine(rootContext) {
-        const quizDatabase = [
-            { q: "१. खालीलपैकी कुठला शब्द 'कमी मीठ किंवा मीठ नसलेले जेवण' हा अर्थ दर्शवण्यासाठी अगदी अचूक बसेल?\n\n“भाजीत मीठ टाकायला विसरल्यामुळे, आजचे जेवण सर्वांनाच ________ वाटले.”", o: ["(अ) अळणी", "(ब) आर्तहाक", "(क) इत्यंभूत", "(ड) ईषत"], a: 0 },
-            { q: "२. खालीलपैकी कुठला शब्द संकटात किंवा तीव्र वेदनेत मारलेल्या हाकेला दर्शवण्यासाठी वापरला जातो?\n\n“संकटात सापडलेल्या त्या पाखराने दिलेली ________ ऐकून, शिकारीसुद्धा क्षणभर थांबला.”", o: ["(अ) अळणी", "(ब) आर्तहाक", "(क) इत्यंभूत", "(ड) ईषत"], a: 1 },
-            { q: "३. खालीलपैकी कुठला शब्द 'सुरुवातीपासून शेवटपर्यंत सविस्तर' या अर्थासाठी वापरला जातो?\n\n“पोलिसांनी चोराला पकडल्यानंतर, त्याने गुन्ह्याची ________ माहिती त्यांना दिली.”", o: ["(अ) अळणी", "(ब) आर्तहाक", "(क) इत्यंभूत", "(ड) ईषत"], a: 2 },
-            { q: "४. खालीलपैकी कुठला शब्द 'किंचित किंवा अगदी थोडेसे' हा अर्थ स्पष्ट करण्यासाठी योग्य ठरेल?\n\n“त्याच्या त्या गंभीर चेहऱ्यावर अचानक उमललेले ________ हास्य बरेच काही सांगून गेले.”", o: ["(अ) अळणी", "(ब) आर्तहाक", "(क) इत्यंभूत", "(ड) ईषत"], a: 3 },
-            { q: "५. खालीलपैकी कुठला शब्द 'जाणीवपूर्वक केलेले दुर्लक्ष किंवा हेळसांड' या अर्थाला पूर्ण करतो?\n\n“रात्रंदिवस मेहनत करूनही समाजाकडून होणारी आपली ________ पाहून त्या कलाकाराचे मन खिन्न झाले.”", o: ["(अ) उपेक्षा", "(ब) ऊरभरून", "(क) एकटाकी", "(ड) ऐनमेळ"], a: 0 }
-        ];
-
-        let currentQuestionIndex = 0;
-        let userScore = 0;
-        let hasAnsweredCurrent = false;
-
-        const progressText = rootContext.querySelector('#quizProgress');
-        const scoreText = rootContext.querySelector('#quizScore');
-        const questionBox = rootContext.querySelector('#quizQuestionBox');
-        const optionsContainer = rootContext.querySelector('#quizOptionsContainer');
-        const actionWrapper = rootContext.querySelector('#quizActionWrapper');
-
-        if(!questionBox) return;
-
-        function loadQuestion() {
-            hasAnsweredCurrent = false;
-            actionWrapper.innerHTML = '';
-            optionsContainer.innerHTML = '';
-            let currentQ = quizDatabase[currentQuestionIndex];
-            if (progressText) progressText.innerText = `प्रश्न ${currentQuestionIndex + 1}/५`;
-            questionBox.innerText = currentQ.q;
-            currentQ.o.forEach((option, index) => {
-                const button = document.createElement('button');
-                button.className = 'quiz-opt-btn';
-                button.innerText = option;
-                button.addEventListener('click', () => handleOptionSelection(index, button));
-                optionsContainer.appendChild(button);
-            });
-        }
-
-        function handleOptionSelection(selectedIndex, clickedButton) {
-            if (hasAnsweredCurrent) return;
-            hasAnsweredCurrent = true;
-            const currentQ = quizDatabase[currentQuestionIndex];
-            const allOptionButtons = optionsContainer.getElementsByClassName('quiz-opt-btn');
-            if (selectedIndex === currentQ.a) {
-                clickedButton.classList.add('correct-flash');
-                userScore++;
-                if (scoreText) scoreText.innerText = `गुण: ${userScore}`;
-            } else {
-                clickedButton.classList.add('wrong-flash');
-                if (allOptionButtons[currentQ.a]) allOptionButtons[currentQ.a].classList.add('correct-flash');
-            }
-            const actionBtn = document.createElement('button');
-            actionBtn.className = 'quiz-next-btn';
-            if (currentQuestionIndex < quizDatabase.length - 1) {
-                actionBtn.innerText = 'पुढील प्रश्न →';
-                actionBtn.addEventListener('click', () => { currentQuestionIndex++; loadQuestion(); });
-            } else {
-                actionBtn.style.backgroundColor = '#22c55e';
-                actionBtn.innerText = 'चाचणी पूर्ण करा';
-                actionBtn.addEventListener('click', displayQuizSummary);
-            }
-            actionWrapper.appendChild(actionBtn);
-        }
-
-        function displayQuizSummary() {
-            questionBox.innerText = `चाचणी पूर्ण झाली! तुमचा एकूण निकाल: ${userScore}/५`;
-            optionsContainer.innerHTML = '';
-            actionWrapper.innerHTML = `<a href="#" id="retryQuizBtn" class="section-redirect-link" style="display:block; text-align:center;">→ पुन्हा प्रयत्न करा</a>`;
-            rootContext.querySelector('#retryQuizBtn').addEventListener('click', (e) => {
-                e.preventDefault();
-                setupQuizEngine(rootContext);
-            });
-        }
-        loadQuestion();
-    }
+    if (navHome) navHome.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); loadHomepage(); });
+    if (navWotd) navWotd.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); const node = cachedHomepage.cloneNode(true); showPage(node.querySelector('#wordOfTheDaySection'), null); });
+    if (navQuiz) navQuiz.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); const node = cachedHomepage.cloneNode(true); showPage(node.querySelector('#quizSection'), () => setupQuizEngine(entryContainer)); });
+    if (navAlphabet) navAlphabet.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); const node = cachedHomepage.cloneNode(true); showPage(node.querySelector('#alphabetSection'), () => initializeRoutingEvents(entryContainer)); });
 });

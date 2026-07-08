@@ -236,17 +236,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (navHome) navHome.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); loadHomepage(); });
     if (navWotd) navWotd.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); const node = cachedHomepage.cloneNode(true); showPage(node.querySelector('#wordOfTheDaySection'), null); });
     
-    // Quiz navigation with Title added
+    // Quiz navigation with Title added and styled with --accent-gold
     if (navQuiz) navQuiz.addEventListener('click', (e) => { 
         e.preventDefault(); 
         toggleMenu(); 
         const node = cachedHomepage.cloneNode(true); 
         const quizSection = node.querySelector('#quizSection');
         
-        // Add Quiz Title if it doesn't already exist
+        // Add Quiz Title with consistent golden/yellow color
         if (!quizSection.querySelector('h2')) {
             const title = document.createElement('h2');
             title.innerText = 'शब्दसंग्रह चाचणी';
+            title.style.color = 'var(--accent-gold)';
             title.style.marginBottom = '1rem';
             quizSection.prepend(title);
         }

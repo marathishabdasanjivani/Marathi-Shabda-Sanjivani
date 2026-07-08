@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const link = homeNode.querySelector('#wotdLink');
             const def = homeNode.querySelector('#wotdDefinition');
             if (link) link.innerText = dailyWord.word;
-            if (def) def.innerText = dailyWord.meanings[0].definition; 
+            if (def) def.innerText = dailyWord.meanings[0].definition;
         }
         
         showPage(homeNode, null);
@@ -164,7 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const item = dictionaryData.find(w => w.word.trim().toLowerCase() === wordName.trim().toLowerCase());
         if(!item) return;
 
-        // Detailed HTML structure with spacing
         let wordHTML = `
             <div class="word-entry">
                 <div class="entry-header">
@@ -244,11 +243,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const node = cachedHomepage.cloneNode(true); 
         const quizSection = node.querySelector('#quizSection');
         
-        // Add Quiz Title
-        const title = document.createElement('h2');
-        title.innerText = 'शब्दसंग्रह चाचणी';
-        title.style.marginBottom = '1rem';
-        quizSection.prepend(title);
+        // Add Quiz Title if it doesn't already exist
+        if (!quizSection.querySelector('h2')) {
+            const title = document.createElement('h2');
+            title.innerText = 'शब्दसंग्रह चाचणी';
+            title.style.marginBottom = '1rem';
+            quizSection.prepend(title);
+        }
         
         showPage(quizSection, () => setupQuizEngine(entryContainer)); 
     });

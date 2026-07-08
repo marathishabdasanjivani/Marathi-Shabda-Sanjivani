@@ -233,17 +233,19 @@ document.addEventListener('DOMContentLoaded', () => {
         showPage(wordHTML, null);
         if (pushState) history.pushState({ view: "word-detail", word: item.word }, "", `?word=${item.word}`);
     }
-
+    
     function renderLetterPage(letter, pushState = true) {
-        const matched = dictionaryData.filter(i => i.word.startsWith(letter) && !(letter === "अ" && i.word.startsWith("अं")));
-        let html = `<div class="word-entry"><h2 class="headword">अक्षर: "${letter}"</h2><div class="letter-words-list-stack">`;
-        matched.forEach(w => html += `<button class="word-target-btn letter-word-row-item" data-word="${w.word}">${w.word}</button>`);
-        html += `</div><a href="#" id="backToGridBtn" class="section-redirect-link">← परत जा</a></div>`;
-        showPage(html, () => {
-            entryContainer.querySelectorAll('.word-target-btn').forEach(b => b.addEventListener('click', () => loadWordDetailPage(b.getAttribute('data-word'))));
-            entryContainer.querySelector('#backToGridBtn').addEventListener('click', (e) => { e.preventDefault(); loadHomepage(); });
-        });
-    }
+    const matched = dictionaryData.filter(i => i.word.startsWith(letter) && !(letter === "अ" && i.word.startsWith("अं")));
+    let html = `<div class="word-entry"><h2 class="headword">अक्षर: "${letter}"</h2><div class="letter-words-list-stack">`;
+    matched.forEach(w => html += `<button class="word-target-btn letter-word-row-item" data-word="${w.word}">${w.word}</button>`);
+    html += `</div><a href="#" id="backToGridBtn" class="section-redirect-link">← परत जा</a></div>`;
+    
+    showPage(html, () => {
+        entryContainer.querySelectorAll('.word-target-btn').forEach(b => b.addEventListener('click', () => loadWordDetailPage(b.getAttribute('data-word'), true)));
+        entryContainer.querySelector('#backToGridBtn').addEventListener('click', (e) => { e.preventDefault(); loadHomepage(); });
+    });
+    if (pushState) history.pushState({ view: "letter-page", letter: letter }, "", `?letter=${letter}`);
+}
 
     if (navHome) navHome.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); loadHomepage(); });
     if (navWotd) navWotd.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); const node = cachedHomepage.cloneNode(true); showPage(node.querySelector('#wordOfTheDaySection'), null); });
@@ -259,24 +261,22 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (navAlphabet) navAlphabet.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); const node = cachedHomepage.cloneNode(true); showPage(node.querySelector('#alphabetSection'), () => initializeRoutingEvents(entryContainer)); });
     
-    // Browser Back/Forward navigation handler
 window.addEventListener('popstate', (event) => {
     if (event.state && event.state.view) {
         if (event.state.view === 'home') {
             loadHomepage();
         } else if (event.state.view === 'word-detail') {
             loadWordDetailPage(event.state.word, false);
+        } else if (event.state.view === 'letter-page') {
+            // ADD THIS: Handles returning to the specific letter page
+            renderLetterPage(event.state.letter, false);
         } else if (event.state.view === 'privacy') {
-            // Re-trigger the logic that loads your privacy page
-            // If you have a dedicated function, call it here
             fetch('/privacy.html').then(r => r.text()).then(data => {
                 const doc = new DOMParser().parseFromString(data, 'text/html');
                 entryContainer.innerHTML = doc.querySelector('.main-layout').innerHTML;
             });
         }
-        // You can add more conditions here for other views (About, Terms, etc.)
     } else {
-        // Fallback: If no state is found, just load the home page
         loadHomepage();
     }
 });

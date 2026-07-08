@@ -1,12 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const searchBar = document.getElementById('searchBar');
-    const searchDropdown = document.getElementById('searchDropdown');
     const entryContainer = document.getElementById('entryContainer');
     const homepageDefault = document.getElementById('homepageDefault');
     const menuBtn = document.getElementById('menuBtn');
     const sideNav = document.getElementById('sideNav');
     const menuOverlay = document.getElementById('menuOverlay');
-    const siteBrandGroup = document.getElementById('siteBrandGroup');
+    const cachedHomepage = homepageDefault.cloneNode(true);
 
     // Navigation and Footer Elements
     const navHome = document.getElementById('navHome');
@@ -22,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const footerAbout = document.getElementById('footerAbout');
 
     let dictionaryData = [];
-    const cachedHomepage = homepageDefault.cloneNode(true);
 
     function toggleMenu() {
         menuBtn.classList.toggle('active');
@@ -32,6 +29,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (menuBtn) menuBtn.addEventListener('click', toggleMenu);
     if (menuOverlay) menuOverlay.addEventListener('click', toggleMenu);
+
+    // Helper to ensure Quiz Title exists with correct styling
+    function ensureQuizTitle(container) {
+        const quizSection = container.querySelector('#quizSection');
+        if (quizSection && !quizSection.querySelector('.section-title')) {
+            const title = document.createElement('h2');
+            title.className = 'section-title'; // Using standard title class for uniformity
+            title.innerText = 'शब्दसंग्रह चाचणी';
+            quizSection.prepend(title);
+        }
+    }
 
     function loadPrivacyPolicy(e) {
         e.preventDefault();
@@ -72,6 +80,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadHomepage() {
         const homeNode = cachedHomepage.cloneNode(true);
         
+        // Add Quiz Title on Homepage
+        ensureQuizTitle(homeNode);
+
         // WOTD: Daily random word fetch logic
         if (dictionaryData.length > 0) {
             const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
@@ -88,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
         history.pushState({ view: "home" }, "", "index.html"); 
     }
 
-    // Quiz Engine: Fetches from quiz.json
+    // Quiz Engine
     function setupQuizEngine(rootContext) {
         const questionBox = rootContext.querySelector('#quizQuestionBox');
         if(!questionBox) return;
@@ -236,23 +247,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (navHome) navHome.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); loadHomepage(); });
     if (navWotd) navWotd.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); const node = cachedHomepage.cloneNode(true); showPage(node.querySelector('#wordOfTheDaySection'), null); });
     
-    // Quiz navigation with Title added and styled with --accent-gold
+    // Quiz navigation
     if (navQuiz) navQuiz.addEventListener('click', (e) => { 
         e.preventDefault(); 
         toggleMenu(); 
         const node = cachedHomepage.cloneNode(true); 
-        const quizSection = node.querySelector('#quizSection');
-        
-        // Add Quiz Title with consistent golden/yellow color
-        if (!quizSection.querySelector('h2')) {
-            const title = document.createElement('h2');
-            title.innerText = 'शब्दसंग्रह चाचणी';
-            title.style.color = 'var(--accent-gold)';
-            title.style.marginBottom = '1rem';
-            quizSection.prepend(title);
-        }
-        
-        showPage(quizSection, () => setupQuizEngine(entryContainer)); 
+        ensureQuizTitle(node); // Add title if navigating directly
+        showPage(node.querySelector('#quizSection'), () => setupQuizEngine(entryContainer)); 
     });
     
     if (navAlphabet) navAlphabet.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); const node = cachedHomepage.cloneNode(true); showPage(node.querySelector('#alphabetSection'), () => initializeRoutingEvents(entryContainer)); });

@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const item = dictionaryData.find(w => w.word.trim().toLowerCase() === wordName.trim().toLowerCase());
         if(!item) return;
 
-        // Restored detailed HTML structure for correct spacing
+        // Detailed HTML structure with spacing
         let wordHTML = `
             <div class="word-entry">
                 <div class="entry-header">
@@ -236,6 +236,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (navHome) navHome.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); loadHomepage(); });
     if (navWotd) navWotd.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); const node = cachedHomepage.cloneNode(true); showPage(node.querySelector('#wordOfTheDaySection'), null); });
-    if (navQuiz) navQuiz.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); const node = cachedHomepage.cloneNode(true); showPage(node.querySelector('#quizSection'), () => setupQuizEngine(entryContainer)); });
+    
+    // Quiz navigation with Title added
+    if (navQuiz) navQuiz.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        toggleMenu(); 
+        const node = cachedHomepage.cloneNode(true); 
+        const quizSection = node.querySelector('#quizSection');
+        
+        // Add Quiz Title
+        const title = document.createElement('h2');
+        title.innerText = 'शब्दसंग्रह चाचणी';
+        title.style.marginBottom = '1rem';
+        quizSection.prepend(title);
+        
+        showPage(quizSection, () => setupQuizEngine(entryContainer)); 
+    });
+    
     if (navAlphabet) navAlphabet.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); const node = cachedHomepage.cloneNode(true); showPage(node.querySelector('#alphabetSection'), () => initializeRoutingEvents(entryContainer)); });
 });

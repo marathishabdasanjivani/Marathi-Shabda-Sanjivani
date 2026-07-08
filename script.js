@@ -258,4 +258,27 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     if (navAlphabet) navAlphabet.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); const node = cachedHomepage.cloneNode(true); showPage(node.querySelector('#alphabetSection'), () => initializeRoutingEvents(entryContainer)); });
+    
+    // Browser Back/Forward navigation handler
+window.addEventListener('popstate', (event) => {
+    if (event.state && event.state.view) {
+        if (event.state.view === 'home') {
+            loadHomepage();
+        } else if (event.state.view === 'word-detail') {
+            loadWordDetailPage(event.state.word, false);
+        } else if (event.state.view === 'privacy') {
+            // Re-trigger the logic that loads your privacy page
+            // If you have a dedicated function, call it here
+            fetch('/privacy.html').then(r => r.text()).then(data => {
+                const doc = new DOMParser().parseFromString(data, 'text/html');
+                entryContainer.innerHTML = doc.querySelector('.main-layout').innerHTML;
+            });
+        }
+        // You can add more conditions here for other views (About, Terms, etc.)
+    } else {
+        // Fallback: If no state is found, just load the home page
+        loadHomepage();
+    }
+});
+
 });

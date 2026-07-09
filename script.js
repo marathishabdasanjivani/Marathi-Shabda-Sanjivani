@@ -174,17 +174,9 @@ document.addEventListener('DOMContentLoaded', () => {
             box.style.cursor = 'pointer';
             box.addEventListener('click', () => renderLetterPage(box.innerText.trim(), true));
         });
-        const viewAllWotdLink = context.querySelector('#viewAllWotdLink');
-if(viewAllWotdLink) {
-    viewAllWotdLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        const node = cachedHomepage.cloneNode(true);
-        injectDailyWord(node); // ORDER CHANGED: Inject into the full clone first
-        const section = node.querySelector('#wordOfTheDaySection');
-        showPage(section, () => { initializeRoutingEvents(entryContainer); });
-        history.pushState({ view: "wotd-section-view" }, "");
-    });
-}
+        const wotdLink = context.querySelector('#wotdLink');
+        if(wotdLink) wotdLink.addEventListener('click', () => loadWordDetailPage(wotdLink.innerText.trim(), true));
+    }
 
     function loadWordDetailPage(wordName, pushState = true) {
         const item = dictionaryData.find(w => w.word.trim().toLowerCase() === wordName.trim().toLowerCase());
@@ -262,18 +254,8 @@ if(viewAllWotdLink) {
     }
 
     if (navHome) navHome.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); loadHomepage(); });
-    if (navWotd) {
-    navWotd.addEventListener('click', (e) => {
-        e.preventDefault();
-        toggleMenu();
-        const node = cachedHomepage.cloneNode(true);
-        injectDailyWord(node); // ORDER CHANGED: Inject into the full clone first
-        const section = node.querySelector('#wordOfTheDaySection');
-        showPage(section, null);
-        initializeRoutingEvents(entryContainer);
-        history.pushState({ view: "wotd-isolated" }, "");
-    });
-}
+    if (navWotd) navWotd.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); const node = cachedHomepage.cloneNode(true); showPage(node.querySelector('#wordOfTheDaySection'), null); });
+    
     // Quiz navigation
     if (navQuiz) navQuiz.addEventListener('click', (e) => { 
         e.preventDefault(); 

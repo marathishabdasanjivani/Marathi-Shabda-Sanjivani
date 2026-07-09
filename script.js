@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const searchBar = document.getElementById('searchBar');
+    const searchDropdown = document.getElementById('searchDropdown');
     const entryContainer = document.getElementById('entryContainer');
     const homepageDefault = document.getElementById('homepageDefault');
     const menuBtn = document.getElementById('menuBtn');
@@ -76,6 +78,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typeof elementHTML === 'string') entryContainer.innerHTML = elementHTML;
         else entryContainer.appendChild(elementHTML);
         if (onRenderCallback) onRenderCallback();
+        
+        // Reset Search UI when a new page is shown
+        if (searchDropdown) searchDropdown.style.display = 'none';
+        if (searchBar) searchBar.value = '';
     }
 
     function loadHomepage() {
@@ -245,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
         entryContainer.querySelector('#backToGridBtn').addEventListener('click', (e) => { e.preventDefault(); loadHomepage(); });
     });
     if (pushState) history.pushState({ view: "letter-page", letter: letter }, "", `?letter=${letter}`);
-}
+    }
 
     if (navHome) navHome.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); loadHomepage(); });
     if (navWotd) navWotd.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); const node = cachedHomepage.cloneNode(true); showPage(node.querySelector('#wordOfTheDaySection'), null); });
@@ -261,24 +267,59 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (navAlphabet) navAlphabet.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); const node = cachedHomepage.cloneNode(true); showPage(node.querySelector('#alphabetSection'), () => initializeRoutingEvents(entryContainer)); });
     
-window.addEventListener('popstate', (event) => {
-    if (event.state && event.state.view) {
-        if (event.state.view === 'home') {
-            loadHomepage();
-        } else if (event.state.view === 'word-detail') {
-            loadWordDetailPage(event.state.word, false);
-        } else if (event.state.view === 'letter-page') {
-            // ADD THIS: Handles returning to the specific letter page
-            renderLetterPage(event.state.letter, false);
-        } else if (event.state.view === 'privacy') {
-            fetch('/privacy.html').then(r => r.text()).then(data => {
-                const doc = new DOMParser().parseFromString(data, 'text/html');
-                entryContainer.innerHTML = doc.querySelector('.main-layout').innerHTML;
+    // Search Bar Logic (Restored)
+    if (searchBar && searchDropdown) {
+        searchBar.addEventListener('input', (e) => {
+            const inputVal = e.target.value.trim().toLowerCase();
+            if (inputVal.length === 0) {
+                searchDropdown.innerHTML = '';
+                searchDropdown.style.display = 'none';
+                return;
+            }
+            const matches = dictionaryData.filter(item => {
+                const wordLow = item.word.toLowerCase();
+                if (inputVal === "अ" && wordLow.startsWith("अं")) return false;
+                return wordLow.startsWith(inputVal);
             });
-        }
-    } else {
-        loadHomepage();
+            if (matches.length === 0) {
+                searchDropdown.innerHTML = `<div style="padding: 0.8rem; color: #64748b; font-size: 0.95rem; text-align: center;">शब्द सापडले नाहीत.</div>`;
+            } else {
+                searchDropdown.innerHTML = matches.map(item => `
+                    <div class="dropdown-row-item" data-word="${item.word}">
+                        ${item.word} <span style="font-size:0.8rem; font-weight:normal; color:#64748b; margin-left:0.5rem;">(${item.partOfSpeech})</span>
+                    </div>`).join('');
+            }
+            searchDropdown.className = 'search-dropdown-list';
+            searchDropdown.style.display = 'block';
+            searchDropdown.querySelectorAll('.dropdown-row-item').forEach(row => {
+                row.addEventListener('click', () => { loadWordDetailPage(row.getAttribute('data-word'), true); });
+            });
+        });
+        document.addEventListener('click', (e) => {
+            if (!searchBar.contains(e.target) && !searchDropdown.contains(e.target)) {
+                searchDropdown.style.display = 'none';
+            }
+        });
     }
-});
+
+    window.addEventListener('popstate', (event) => {
+        if (event.state && event.state.view) {
+            if (event.state.view === 'home') {
+                loadHomepage();
+            } else if (event.state.view === 'word-detail') {
+                loadWordDetailPage(event.state.word, false);
+            } else if (event.state.view === 'letter-page') {
+                // ADD THIS: Handles returning to the specific letter page
+                renderLetterPage(event.state.letter, false);
+            } else if (event.state.view === 'privacy') {
+                fetch('/privacy.html').then(r => r.text()).then(data => {
+                    const doc = new DOMParser().parseFromString(data, 'text/html');
+                    entryContainer.innerHTML = doc.querySelector('.main-layout').innerHTML;
+                });
+            }
+        } else {
+            loadHomepage();
+        }
+    });
 
 });

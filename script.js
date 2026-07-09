@@ -254,7 +254,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (navHome) navHome.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); loadHomepage(); });
-    if (navWotd) navWotd.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); const node = cachedHomepage.cloneNode(true); showPage(node.querySelector('#wordOfTheDaySection'), null); });
+    
+    // Updated WOTD navigation
+    if (navWotd) navWotd.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        toggleMenu(); 
+        const node = cachedHomepage.cloneNode(true); 
+        
+        // Match the WOTD logic used on the homepage
+        if (dictionaryData.length > 0) {
+            const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+            const dailyWord = dictionaryData[dayOfYear % dictionaryData.length];
+            const link = node.querySelector('#wotdLink');
+            const def = node.querySelector('#wotdDefinition');
+            if (link) link.innerText = dailyWord.word;
+            if (def) def.innerText = dailyWord.meanings[0].definition;
+        }
+
+        showPage(node.querySelector('#wordOfTheDaySection'), () => initializeRoutingEvents(entryContainer)); 
+    });
     
     // Quiz navigation
     if (navQuiz) navQuiz.addEventListener('click', (e) => { 

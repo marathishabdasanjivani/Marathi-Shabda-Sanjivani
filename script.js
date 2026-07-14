@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (quizSection && !quizSection.querySelector('.section-title-badge')) {
             const title = document.createElement('div');
             title.className = 'section-title-badge'; 
-            title.innerText = 'शब्दसंग्रह चाचणी';
+            title.innerText = 'शब्दसंग्रह चाचणी (Quiz)';
             quizSection.prepend(title);
         }
     }

@@ -23,6 +23,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let dictionaryData = [];
 
+    // --- NEW: WOTD Helper Function ---
+    // This function scrambles the alphabetical order using a prime multiplier
+    // so the word is "random" but stays consistent for the entire day.
+    function getWOTD(offsetDays = 0) {
+        if (dictionaryData.length === 0) return null;
+        const now = new Date();
+        now.setDate(now.getDate() - offsetDays);
+        const epochDay = Math.floor(now.getTime() / 86400000);
+        const randomIndex = (epochDay * 997) % dictionaryData.length;
+        return dictionaryData[randomIndex];
+    }
+    // ---------------------------------
+
     function toggleMenu() {
         menuBtn.classList.toggle('active');
         sideNav.classList.toggle('open');
@@ -35,10 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Helper to ensure Quiz Title exists with correct .section-title-badge styling
     function ensureQuizTitle(container) {
         const quizSection = container.querySelector('#quizSection');
-        // Check if the title badge already exists to prevent duplication
         if (quizSection && !quizSection.querySelector('.section-title-badge')) {
             const title = document.createElement('div');
-            title.className = 'section-title-badge'; // Using existing CSS class for consistent Gold/Upper styling
+            title.className = 'section-title-badge'; 
             title.innerText = 'शब्दसंग्रह चाचणी';
             quizSection.prepend(title);
         }
@@ -87,13 +99,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadHomepage() {
         const homeNode = cachedHomepage.cloneNode(true);
         
-        // Add Quiz Title on Homepage with consistent style
         ensureQuizTitle(homeNode);
 
-        // WOTD: Daily random word fetch logic
+        // WOTD: Daily random word fetch logic (Updated to use randomized getWOTD)
         if (dictionaryData.length > 0) {
-            const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
-            const dailyWord = dictionaryData[dayOfYear % dictionaryData.length];
+            const dailyWord = getWOTD(0);
             const link = homeNode.querySelector('#wotdLink');
             const def = homeNode.querySelector('#wotdDefinition');
             if (link) link.innerText = dailyWord.word;
@@ -241,37 +251,63 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function renderLetterPage(letter, pushState = true) {
-    const matched = dictionaryData.filter(i => i.word.startsWith(letter) && !(letter === "अ" && i.word.startsWith("अं")));
-    let html = `<div class="word-entry"><h2 class="headword">अक्षर: "${letter}"</h2><div class="letter-words-list-stack">`;
-    matched.forEach(w => html += `<button class="word-target-btn letter-word-row-item" data-word="${w.word}">${w.word}</button>`);
-    html += `</div><a href="#" id="backToGridBtn" class="section-redirect-link">← परत जा</a></div>`;
-    
-    showPage(html, () => {
-        entryContainer.querySelectorAll('.word-target-btn').forEach(b => b.addEventListener('click', () => loadWordDetailPage(b.getAttribute('data-word'), true)));
-        entryContainer.querySelector('#backToGridBtn').addEventListener('click', (e) => { e.preventDefault(); loadHomepage(); });
-    });
-    if (pushState) history.pushState({ view: "letter-page", letter: letter }, "", `?letter=${letter}`);
+        const matched = dictionaryData.filter(i => i.word.startsWith(letter) && !(letter === "अ" && i.word.startsWith("अं")));
+        let html = `<div class="word-entry"><h2 class="headword">अक्षर: "${letter}"</h2><div class="letter-words-list-stack">`;
+        matched.forEach(w => html += `<button class="word-target-btn letter-word-row-item" data-word="${w.word}">${w.word}</button>`);
+        html += `</div><a href="#" id="backToGridBtn" class="section-redirect-link">← परत जा</a></div>`;
+        
+        showPage(html, () => {
+            entryContainer.querySelectorAll('.word-target-btn').forEach(b => b.addEventListener('click', () => loadWordDetailPage(b.getAttribute('data-word'), true)));
+            entryContainer.querySelector('#backToGridBtn').addEventListener('click', (e) => { e.preventDefault(); loadHomepage(); });
+        });
+        if (pushState) history.pushState({ view: "letter-page", letter: letter }, "", `?letter=${letter}`);
     }
 
     if (navHome) navHome.addEventListener('click', (e) => { e.preventDefault(); toggleMenu(); loadHomepage(); });
     
-    // Updated WOTD navigation
+    // Updated WOTD navigation (Now includes Previous Days logic)
     if (navWotd) navWotd.addEventListener('click', (e) => { 
         e.preventDefault(); 
         toggleMenu(); 
         const node = cachedHomepage.cloneNode(true); 
         
-        // Match the WOTD logic used on the homepage
         if (dictionaryData.length > 0) {
-            const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
-            const dailyWord = dictionaryData[dayOfYear % dictionaryData.length];
+            // Set Today's Word
+            const dailyWord = getWOTD(0);
             const link = node.querySelector('#wotdLink');
             const def = node.querySelector('#wotdDefinition');
             if (link) link.innerText = dailyWord.word;
             if (def) def.innerText = dailyWord.meanings[0].definition;
+
+            // Dynamically create the "Previous Words" section directly via JS
+            let wotdSection = node.querySelector('#wordOfTheDaySection');
+            if (wotdSection) {
+                let prevContainer = document.createElement('div');
+                prevContainer.style.marginTop = '2.5rem';
+                prevContainer.style.paddingTop = '1.5rem';
+                prevContainer.style.borderTop = '1px dashed var(--border-light, #e2e8f0)';
+                
+                let prevHTML = `<div style="font-weight: bold; margin-bottom: 1rem; color: var(--primary-dark); font-size: 1.1rem;">मागील दिवसांचे शब्द:</div><div style="display: flex; flex-wrap: wrap; gap: 0.6rem;">`;
+                
+                for (let i = 1; i <= 5; i++) {
+                    const pastWord = getWOTD(i);
+                    if (pastWord) {
+                        prevHTML += `<button class="word-target-btn letter-word-row-item" data-word="${pastWord.word}" style="font-size:0.95rem; padding:0.5rem 0.9rem; margin:0;">${pastWord.word}</button>`;
+                    }
+                }
+                prevHTML += `</div>`;
+                prevContainer.innerHTML = prevHTML;
+                wotdSection.appendChild(prevContainer);
+            }
         }
 
-        showPage(node.querySelector('#wordOfTheDaySection'), () => initializeRoutingEvents(entryContainer)); 
+        showPage(node.querySelector('#wordOfTheDaySection'), () => {
+            initializeRoutingEvents(entryContainer);
+            // Attach click listeners to the dynamically generated Past Words buttons
+            entryContainer.querySelectorAll('.word-target-btn').forEach(btn => {
+                btn.addEventListener('click', () => loadWordDetailPage(btn.getAttribute('data-word'), true));
+            });
+        }); 
     });
     
     // Quiz navigation
@@ -279,7 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault(); 
         toggleMenu(); 
         const node = cachedHomepage.cloneNode(true); 
-        ensureQuizTitle(node); // Add title with correct style
+        ensureQuizTitle(node); 
         showPage(node.querySelector('#quizSection'), () => setupQuizEngine(entryContainer)); 
     });
     
@@ -326,18 +362,4 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadHomepage();
             } else if (event.state.view === 'word-detail') {
                 loadWordDetailPage(event.state.word, false);
-            } else if (event.state.view === 'letter-page') {
-                // ADD THIS: Handles returning to the specific letter page
-                renderLetterPage(event.state.letter, false);
-            } else if (event.state.view === 'privacy') {
-                fetch('/privacy.html').then(r => r.text()).then(data => {
-                    const doc = new DOMParser().parseFromString(data, 'text/html');
-                    entryContainer.innerHTML = doc.querySelector('.main-layout').innerHTML;
-                });
-            }
-        } else {
-            loadHomepage();
-        }
-    });
-
-});
+            } else if (event.stat

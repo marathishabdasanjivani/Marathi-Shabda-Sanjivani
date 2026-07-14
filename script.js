@@ -362,4 +362,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadHomepage();
             } else if (event.state.view === 'word-detail') {
                 loadWordDetailPage(event.state.word, false);
-            } else if (event.stat
+            } else if (event.state.view === 'letter-page') {
+                renderLetterPage(event.state.letter, false);
+            } else if (event.state.view === 'privacy') {
+                fetch('/privacy.html').then(r => r.text()).then(data => {
+                    const doc = new DOMParser().parseFromString(data, 'text/html');
+                    entryContainer.innerHTML = doc.querySelector('.main-layout').innerHTML;
+                });
+            }
+        } else {
+            loadHomepage();
+        }
+    });
+
+});
